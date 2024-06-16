@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:school_todo_list/themes.dart';
-import 'package:school_todo_list/todo_list_screen.dart';
+import 'package:school_todo_list/presentation/themes.dart';
+import 'package:school_todo_list/presentation/todo_list_screen.dart';
 
 void main() {
   runApp(const MyApp());
