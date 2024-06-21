@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_tile.dart';
@@ -19,7 +20,15 @@ final tasks = List.generate(
       'одна из сторон в любом случае понесет убытки.');
     }
 
-    return index % 2 == 0 ? Task(title: 'Купить хлеб') : Task(title: 'Купить молоко');
+    return index % 2 == 0
+        ? Task(
+            title: 'Купить хлеб',
+            importance: index % 3 == 0 ? Importance.low : Importance.none,
+          )
+        : Task(
+            title: 'Купить молоко',
+            importance: index % 5 == 0 ? Importance.high : Importance.none,
+          );
   },
 );
 
@@ -81,6 +90,8 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
+  final _focusNode = FocusNode();
+
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
@@ -97,13 +108,15 @@ class _TaskListState extends State<TaskList> {
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
               if (index == tasks.length) {
-                return const Padding(
-                  padding: EdgeInsets.only(left: 72.0),
+                return Padding(
+                  padding: const EdgeInsets.only(left: 72.0),
                   child: TextField(
-                    decoration: InputDecoration(
+                    focusNode: _focusNode,
+                    decoration: const InputDecoration(
                       labelText: "Новое",
                       border: InputBorder.none,
                     ),
+                    onTapOutside: (event) => _focusNode.unfocus(),
                   ),
                 );
               }

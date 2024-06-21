@@ -52,6 +52,13 @@ final lightTheme = ThemeData(
   ),
   iconButtonTheme: const IconButtonThemeData(style: buttonStyle),
   textButtonTheme: const TextButtonThemeData(style: buttonStyle),
+  listTileTheme: const ListTileThemeData(
+    horizontalTitleGap: 4.0,
+  ),
+  dividerColor: const Color(0x33000000),
+  dividerTheme: const DividerThemeData(
+    color: Color(0x33000000),
+  ),
 );
 
 final darkTheme = ThemeData(
@@ -99,4 +106,11 @@ final darkTheme = ThemeData(
   ),
   iconButtonTheme: const IconButtonThemeData(style: buttonStyle),
   textButtonTheme: const TextButtonThemeData(style: buttonStyle),
+  listTileTheme: const ListTileThemeData(
+    horizontalTitleGap: 4.0,
+  ),
+  dividerColor: const Color(0x33FFFFFF),
+  dividerTheme: const DividerThemeData(
+    color: Color(0x33FFFFFF),
+  ),
 );
