@@ -4,6 +4,7 @@ import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
+import 'package:school_todo_list/presentation/task_list/task_list_screen_app_bar.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_tile.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
 
@@ -67,9 +68,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: CustomScrollView(
           slivers: [
-            const TaskListScreenAppBar(),
-            CompletedTasksCounter(
-              completedTasksVisibility: completedTasksVisibility,
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: MySliverAppBar(
+                expandedHeight: 148,
+                collapsedHeight: 88,
+                completedTasksVisibility: completedTasksVisibility,
+              ),
             ),
             ValueListenableBuilder(
               valueListenable: completedTasksVisibility,
@@ -98,82 +103,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
             );
           },
           child: const Icon(Icons.add),
-        ),
-      ),
-    );
-  }
-}
-
-class TaskListScreenAppBar extends StatelessWidget {
-  const TaskListScreenAppBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverAppBar(
-      pinned: true,
-      expandedHeight: 148,
-      collapsedHeight: 88,
-      elevation: 4,
-      shadowColor: Theme.of(context).colorScheme.surface,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      surfaceTintColor: Theme.of(context).colorScheme.surface,
-      flexibleSpace: FlexibleSpaceBar(
-        title: Text(
-          "Мои дела",
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        titlePadding: const EdgeInsets.only(
-          left: 60,
-          bottom: 16,
-        ),
-      ),
-    );
-  }
-}
-
-class CompletedTasksCounter extends StatefulWidget {
-  const CompletedTasksCounter({
-    super.key,
-    required this.completedTasksVisibility,
-  });
-
-  final ValueNotifier<bool> completedTasksVisibility;
-
-  @override
-  State<CompletedTasksCounter> createState() => _CompletedTasksCounterState();
-}
-
-class _CompletedTasksCounterState extends State<CompletedTasksCounter> {
-  @override
-  Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 60.0, right: 12),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                "Выполнено - 10",
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  widget.completedTasksVisibility.value =
-                      !widget.completedTasksVisibility.value;
-                });
-              },
-              icon: Icon(
-                widget.completedTasksVisibility.value
-                    ? Icons.visibility_off
-                    : Icons.visibility,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          ],
         ),
       ),
     );
