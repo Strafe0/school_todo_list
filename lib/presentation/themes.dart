@@ -53,12 +53,11 @@ final lightTheme = ThemeData(
     ),
   ),
   iconButtonTheme: const IconButtonThemeData(
-    style: ButtonStyle(
-      padding: WidgetStatePropertyAll(
-        EdgeInsets.all(16),
-      ),
-    )
-  ),
+      style: ButtonStyle(
+    padding: WidgetStatePropertyAll(
+      EdgeInsets.all(16),
+    ),
+  )),
   textButtonTheme: const TextButtonThemeData(
     style: ButtonStyle(
       padding: WidgetStatePropertyAll(
@@ -95,13 +94,12 @@ final lightTheme = ThemeData(
         return const Color(0x4D000000);
       }
     }),
-    // trackOutlineColor: const WidgetStatePropertyAll(Color(0x4D000000)),
     trackOutlineWidth: const WidgetStatePropertyAll(1),
   ),
   datePickerTheme: const DatePickerThemeData(
     headerBackgroundColor: Color(0xFF007AFF),
     headerForegroundColor: Colors.white,
-  )
+  ),
 );
 
 final darkTheme = ThemeData(
@@ -154,12 +152,11 @@ final darkTheme = ThemeData(
     ),
   ),
   iconButtonTheme: const IconButtonThemeData(
-    style: ButtonStyle(
-      padding: WidgetStatePropertyAll(
-        EdgeInsets.all(16),
-      ),
-    )
-  ),
+      style: ButtonStyle(
+    padding: WidgetStatePropertyAll(
+      EdgeInsets.all(16),
+    ),
+  )),
   textButtonTheme: const TextButtonThemeData(
     style: ButtonStyle(
       padding: WidgetStatePropertyAll(
@@ -201,5 +198,5 @@ final darkTheme = ThemeData(
   datePickerTheme: const DatePickerThemeData(
     headerBackgroundColor: Color(0xFF007AFF),
     headerForegroundColor: Colors.white,
-  )
+  ),
 );

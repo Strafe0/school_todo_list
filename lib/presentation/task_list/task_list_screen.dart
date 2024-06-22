@@ -7,19 +7,19 @@ import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_tile.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
 
-
 final allTasks = List.generate(
   30,
   (index) {
     if (index == 4) {
-      return Task(title: 'Например, сейчас одна акция «Лукойла» стоит '
-      'около 5700 рублей. Фьючерс на акции «Лукойла» — это, например, '
-      'договор между покупателем и продавцом о том, что покупатель купит '
-      'акции «Лукойла» у продавца по цене 5700 рублей через 3 месяца. '
-      'При этом не важно, какая цена будет у акций через 3 месяца: '
-      'цена сделки между покупателем и продавцом все равно останется 5700 рублей. '
-      'Если реальная цена акции через три месяца не останется прежней, '
-      'одна из сторон в любом случае понесет убытки.');
+      return Task(
+          title: 'Например, сейчас одна акция «Лукойла» стоит '
+              'около 5700 рублей. Фьючерс на акции «Лукойла» — это, например, '
+              'договор между покупателем и продавцом о том, что покупатель купит '
+              'акции «Лукойла» у продавца по цене 5700 рублей через 3 месяца. '
+              'При этом не важно, какая цена будет у акций через 3 месяца: '
+              'цена сделки между покупателем и продавцом все равно останется 5700 рублей. '
+              'Если реальная цена акции через три месяца не останется прежней, '
+              'одна из сторон в любом случае понесет убытки.');
     }
 
     return index % 2 == 0
@@ -60,7 +60,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
           ? Brightness.light
           : Brightness.dark,
     ));
-    
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -148,8 +148,8 @@ class _CompletedTasksCounterState extends State<CompletedTasksCounter> {
               child: Text(
                 "Выполнено - 10",
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.tertiary,
-                ),
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
               ),
             ),
             IconButton(
@@ -217,7 +217,10 @@ class _TaskListState extends State<TaskList> {
               return TaskListTile(
                 task: widget.tasks[index],
                 remove: (id) {
-                  logger.i("Deleting task ${widget.tasks[index].id}: ${widget.tasks[index].title}");
+                  logger.i(
+                    "Deleting task ${widget.tasks[index].id}: "
+                    "${widget.tasks[index].title}",
+                  );
                   setState(() {
                     widget.tasks.removeWhere(
                       (t) => t.id == id,

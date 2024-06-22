@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:school_todo_list/presentation/themes.dart';
 
-BoxDecoration boxDecorationWithShadow({required Color color, double radius = 9}) {
+BoxDecoration boxDecorationWithShadow(
+    {required Color color, double radius = 9}) {
   return BoxDecoration(
     borderRadius: BorderRadius.circular(radius),
     color: color,

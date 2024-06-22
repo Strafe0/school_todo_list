@@ -21,7 +21,7 @@ class TaskEditScreen extends StatefulWidget {
 
 class _TaskEditScreenState extends State<TaskEditScreen> {
   late final Task task;
-  
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +59,8 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
   }
 }
 
-class TaskEditScreenAppBar extends StatelessWidget implements PreferredSizeWidget{
+class TaskEditScreenAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   const TaskEditScreenAppBar({super.key});
 
   @override
@@ -95,7 +96,7 @@ class TaskEditScreenAppBar extends StatelessWidget implements PreferredSizeWidge
       ),
     );
   }
-  
+
   @override
   Size get preferredSize => const Size.fromHeight(56);
 }
@@ -163,10 +164,10 @@ class TaskImportanceField extends StatefulWidget {
 }
 
 class _TaskImportanceFieldState extends State<TaskImportanceField> {
-  Color? getColor(BuildContext context) => switch(widget.task.importance) {
-    Importance.high => Theme.of(context).colorScheme.error,
-    _ => null,
-  };
+  Color? getColor(BuildContext context) => switch (widget.task.importance) {
+        Importance.high => Theme.of(context).colorScheme.error,
+        _ => null,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +274,7 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
         } else {
           pickedDateTime = null;
         }
-        
+
         setState(() {
           hasDeadline = pickedDateTime != null;
           logger.d("Selected deadline: $pickedDateTime");

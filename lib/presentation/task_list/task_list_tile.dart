@@ -60,7 +60,8 @@ class _TaskListTileState extends State<TaskListTile> {
           right: 8.0,
         ),
         controlAffinity: ListTileControlAffinity.leading,
-        fillColor: WidgetStatePropertyAll(widget.task.isCompleted
+        fillColor: WidgetStatePropertyAll(
+          widget.task.isCompleted
               ? Theme.of(context).colorScheme.secondary
               : null,
         ),
@@ -96,9 +97,7 @@ class TaskTitle extends StatelessWidget {
         color: task.isCompleted
             ? Theme.of(context).dividerColor
             : Theme.of(context).colorScheme.onSurface,
-        decoration: task.isCompleted
-            ? TextDecoration.lineThrough
-            : null,
+        decoration: task.isCompleted ? TextDecoration.lineThrough : null,
         decorationColor: Theme.of(context).dividerColor,
       ),
       createTextSpanWithImportance(

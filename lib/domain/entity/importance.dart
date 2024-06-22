@@ -1,5 +1,7 @@
 enum Importance {
-  none("Нет"), low("Низкая"), high("Высокая");
+  none("Нет"),
+  low("Низкая"),
+  high("Высокая");
 
   final String name;
 
