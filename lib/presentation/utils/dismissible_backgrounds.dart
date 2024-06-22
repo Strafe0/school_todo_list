@@ -5,8 +5,11 @@ class DismissibleBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.secondary,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.secondary,
+        borderRadius: BorderRadius.circular(9),
+      ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: Padding(
@@ -26,8 +29,11 @@ class DismissibleSecondaryBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.error,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.error,
+        borderRadius: BorderRadius.circular(9),
+      ),
       child: Align(
         alignment: Alignment.centerRight,
         child: Padding(
