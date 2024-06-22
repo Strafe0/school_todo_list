@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
@@ -41,7 +42,7 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
               TaskTextField(task: task),
               TaskImportanceField(task: task),
               const Divider(),
-              const TaskDeadlineField(),
+              TaskDeadlineField(task: task),
               const Divider(),
               const DeleteTaskButton(),
             ],
@@ -212,12 +213,61 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
   }
 }
 
-class TaskDeadlineField extends StatelessWidget {
-  const TaskDeadlineField({super.key});
+class TaskDeadlineField extends StatefulWidget {
+  const TaskDeadlineField({super.key, required this.task});
+
+  final Task task;
+
+  @override
+  State<TaskDeadlineField> createState() => _TaskDeadlineFieldState();
+}
+
+class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
+  bool hasDeadline = false;
+  DateTime? pickedDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    hasDeadline = widget.task.hasDeadline;
+    pickedDateTime = widget.task.deadline;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SwitchListTile(title: Text("Сделать до"), value: false, onChanged: (value) {});
+    return SwitchListTile(
+      title: const Text("Сделать до"),
+      subtitle: getSubtitle(pickedDateTime),
+      value: hasDeadline,
+      onChanged: (value) async {
+        if (value) {
+          pickedDateTime = await showDatePicker(
+            context: context,
+            initialDate: pickedDateTime,
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2030),
+          );
+        } else {
+          pickedDateTime = null;
+        }
+
+        setState(() {
+          hasDeadline = value;
+        });
+      },
+    );
+  }
+
+  Text? getSubtitle(DateTime? date) {
+    if (date != null) {
+      return Text(
+        convertDateTimeToString(date),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+      );
+    }
+    return null;
   }
 }
 

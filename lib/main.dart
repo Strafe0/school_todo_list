@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:school_todo_list/presentation/themes.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_screen.dart';
 
-void main() {
+void main() async {
+  await initializeDateFormatting('ru_RU', null);
   runApp(const MyApp());
 }
 

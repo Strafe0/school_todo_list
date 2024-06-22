@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/task_list/dismissible_backgrounds.dart';
+import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
 class TaskListTile extends StatefulWidget {
-  const TaskListTile({super.key, required this.tasks, required this.index});
+  const TaskListTile({super.key, required this.task, required this.remove});
 
-  final List<Task> tasks;
-  final int index;
+  final Task task;
+  final void Function(String id) remove;
 
   @override
   State<TaskListTile> createState() => _TaskListTileState();
@@ -18,7 +19,7 @@ class _TaskListTileState extends State<TaskListTile> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey(widget.tasks[widget.index]),
+      key: ValueKey(widget.task),
       direction: DismissDirection.horizontal,
       background: const DismissibleBackground(),
       secondaryBackground: const DismissibleSecondaryBackground(),
@@ -28,37 +29,42 @@ class _TaskListTileState extends State<TaskListTile> {
       confirmDismiss: (direction) {
         if (direction == DismissDirection.startToEnd) {
           setState(() {
-            widget.tasks[widget.index].toggle();
+            widget.task.toggle();
           });
         } else if (direction == DismissDirection.endToStart) {
           setState(() {
-            widget.tasks.removeAt(widget.index);
+            widget.remove(widget.task.id);
           });
         }
 
         return Future.value(false);
       },
       child: CheckboxListTile(
+        title: TaskTitle(task: widget.task),
+        subtitle: widget.task.hasDeadline
+            ? TaskDeadline(
+                deadline: widget.task.deadline!,
+              )
+            : null,
+        value: widget.task.isCompleted,
+        onChanged: (bool? value) {
+          setState(() {
+            widget.task.toggle();
+          });
+        },
         contentPadding: const EdgeInsets.only(
           left: 8.0,
           right: 16.0,
         ),
         controlAffinity: ListTileControlAffinity.leading,
-        value: widget.tasks[widget.index].isCompleted,
-        onChanged: (bool? value) {
-          setState(() {
-            widget.tasks[widget.index].toggle();
-          });
-        },
-        fillColor: WidgetStatePropertyAll(widget.tasks[widget.index].isCompleted
+        fillColor: WidgetStatePropertyAll(widget.task.isCompleted
               ? Theme.of(context).colorScheme.secondary
               : null,
         ),
         checkColor: Theme.of(context).colorScheme.surfaceContainer,
-        checkboxShape: checkboxShape(widget.tasks[widget.index]),
+        checkboxShape: checkboxShape(widget.task),
         side: BorderSide(color: Theme.of(context).dividerColor, width: 2),
-        title: TaskTitle(task: widget.tasks[widget.index]),
-        secondary: TaskInfoButton(task: widget.tasks[widget.index]),
+        secondary: TaskInfoButton(task: widget.task),
       ),
     );
   }
@@ -129,6 +135,22 @@ class TaskInfoButton extends StatelessWidget {
           size: 24,
         ),
       ),
+    );
+  }
+}
+
+class TaskDeadline extends StatelessWidget {
+  const TaskDeadline({super.key, required this.deadline});
+
+  final DateTime deadline;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      convertDateTimeToString(deadline),
+      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            color: Theme.of(context).dividerColor,
+          ),
     );
   }
 }

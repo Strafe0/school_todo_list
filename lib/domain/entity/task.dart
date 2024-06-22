@@ -16,6 +16,8 @@ class Task {
   bool _isCompleted;
   bool get isCompleted => _isCompleted;
 
+  bool get hasDeadline => deadline != null;
+
   void toggle() {
     _isCompleted = !_isCompleted;
   }

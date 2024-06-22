@@ -24,10 +24,12 @@ final tasks = List.generate(
         ? Task(
             title: 'Купить хлеб',
             importance: index % 3 == 0 ? Importance.low : Importance.none,
+            deadline: index % 4 == 0 ? DateTime.now() : null,
           )
         : Task(
             title: 'Купить молоко',
             importance: index % 5 == 0 ? Importance.high : Importance.none,
+            deadline: index % 4 == 0 ? DateTime.now() : null,
           );
   },
 );
@@ -125,7 +127,12 @@ class _TaskListState extends State<TaskList> {
                 );
               }
 
-              return TaskListTile(tasks: tasks, index: index);
+              return TaskListTile(
+                task: tasks[index],
+                remove: (id) => tasks.removeWhere(
+                  (t) => t.id == id,
+                ),
+              );
             },
             childCount: tasks.length + 1,
           ),

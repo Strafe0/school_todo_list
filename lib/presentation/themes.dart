@@ -34,6 +34,12 @@ final lightTheme = ThemeData(
       height: 1.25,
       fontWeight: FontWeight.w400,
     ),
+    bodySmall: TextStyle(
+      color: Color(0xFF000000),
+      fontSize: 14,
+      height: 1.4,
+      fontWeight: FontWeight.w400,
+    ),
   ),
   floatingActionButtonTheme: const FloatingActionButtonThemeData(
     shape: CircleBorder(),
@@ -83,9 +89,15 @@ final darkTheme = ThemeData(
       fontWeight: FontWeight.w500,
     ),
     bodyLarge: TextStyle(
-      color: Color(0xFF000000),
+      color: Color(0xFFFFFFFF),
       fontSize: 16,
       height: 1.25,
+      fontWeight: FontWeight.w400,
+    ),
+    bodySmall: TextStyle(
+      color: Color(0xFFFFFFFF),
+      fontSize: 14,
+      height: 1.4,
       fontWeight: FontWeight.w400,
     ),
   ),
