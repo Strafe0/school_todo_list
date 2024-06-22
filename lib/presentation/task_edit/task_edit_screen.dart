@@ -61,13 +61,6 @@ class TaskEditScreenAppBar extends StatelessWidget implements PreferredSizeWidge
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Theme.of(context).colorScheme.surface,
-      statusBarIconBrightness: Theme.of(context).brightness == Brightness.dark
-          ? Brightness.light
-          : Brightness.dark,
-    ));
-
     return AppBar(
       leading: SizedBox(
         height: 24,

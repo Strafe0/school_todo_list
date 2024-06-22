@@ -6,7 +6,8 @@ class Task {
     required this.title,
     this.importance = Importance.none,
     this.deadline,
-  }) : id = const Uuid().v1(), _isCompleted = false;
+    bool isCompleted = false,
+  }) : id = const Uuid().v1(), _isCompleted = isCompleted;
 
   String id;
   String title;

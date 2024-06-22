@@ -44,6 +44,7 @@ class _TaskListTileState extends State<TaskListTile> {
         subtitle: widget.task.hasDeadline
             ? TaskDeadline(
                 deadline: widget.task.deadline!,
+                isCompleted: widget.task.isCompleted,
               )
             : null,
         value: widget.task.isCompleted,
@@ -136,9 +137,14 @@ class TaskInfoButton extends StatelessWidget {
 }
 
 class TaskDeadline extends StatelessWidget {
-  const TaskDeadline({super.key, required this.deadline});
+  const TaskDeadline({
+    super.key,
+    required this.deadline,
+    required this.isCompleted,
+  });
 
   final DateTime deadline;
+  final bool isCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +152,8 @@ class TaskDeadline extends StatelessWidget {
       convertDateTimeToString(deadline),
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: Theme.of(context).dividerColor,
+            decoration: isCompleted ? TextDecoration.lineThrough : null,
+            decorationColor: Theme.of(context).dividerColor,
           ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
@@ -6,7 +7,7 @@ import 'package:school_todo_list/presentation/task_list/task_list_tile.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
 
 
-final tasks = List.generate(
+final allTasks = List.generate(
   30,
   (index) {
     if (index == 4) {
@@ -42,15 +43,41 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
+  List<Task> tasks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    tasks = allTasks;
+  }
+
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Theme.of(context).colorScheme.surface,
+      statusBarIconBrightness: Theme.of(context).brightness == Brightness.dark
+          ? Brightness.light
+          : Brightness.dark,
+    ));
+    
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: const CustomScrollView(
+        body: CustomScrollView(
           slivers: [
-            TaskListScreenAppBar(),
-            TaskList(),
+            const TaskListScreenAppBar(),
+            CompletedTasksCounter(
+              filterTasks: (bool showCompletedTasks) {
+                setState(() {
+                  if (showCompletedTasks) {
+                    tasks = allTasks;
+                  } else {
+                    tasks = tasks.where((t) => !t.isCompleted).toList();
+                  }
+                });
+              },
+            ),
+            TaskList(tasks: tasks),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -84,13 +111,65 @@ class TaskListScreenAppBar extends StatelessWidget {
           "Мои дела",
           style: Theme.of(context).textTheme.titleLarge,
         ),
+        titlePadding: const EdgeInsets.only(
+          left: 60,
+          bottom: 16,
+        ),
+      ),
+    );
+  }
+}
+
+class CompletedTasksCounter extends StatefulWidget {
+  const CompletedTasksCounter({super.key, required this.filterTasks});
+
+  final void Function(bool showCompletedTasks) filterTasks;
+
+  @override
+  State<CompletedTasksCounter> createState() => _CompletedTasksCounterState();
+}
+
+class _CompletedTasksCounterState extends State<CompletedTasksCounter> {
+  bool showCompletedTasks = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 60.0, right: 12),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "Выполнено - 10",
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  showCompletedTasks = !showCompletedTasks;
+                  widget.filterTasks(showCompletedTasks);
+                });
+              },
+              icon: Icon(
+                showCompletedTasks ? Icons.visibility_off : Icons.visibility,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 class TaskList extends StatefulWidget {
-  const TaskList({super.key});
+  const TaskList({super.key, required this.tasks});
+
+  final List<Task> tasks;
 
   @override
   State<TaskList> createState() => _TaskListState();
@@ -114,7 +193,7 @@ class _TaskListState extends State<TaskList> {
         sliver: SliverList(
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
-              if (index == tasks.length) {
+              if (index == widget.tasks.length) {
                 return Padding(
                   padding: const EdgeInsets.only(left: 52.0, bottom: 8),
                   child: TextField(
@@ -131,13 +210,13 @@ class _TaskListState extends State<TaskList> {
               }
 
               return TaskListTile(
-                task: tasks[index],
-                remove: (id) => tasks.removeWhere(
+                task: widget.tasks[index],
+                remove: (id) => widget.tasks.removeWhere(
                   (t) => t.id == id,
                 ),
               );
             },
-            childCount: tasks.length + 1,
+            childCount: widget.tasks.length + 1,
           ),
         ),
       ),
