@@ -211,9 +211,13 @@ class _TaskListState extends State<TaskList> {
 
               return TaskListTile(
                 task: widget.tasks[index],
-                remove: (id) => widget.tasks.removeWhere(
-                  (t) => t.id == id,
-                ),
+                remove: (id) {
+                  setState(() {
+                    widget.tasks.removeWhere(
+                      (t) => t.id == id,
+                    );
+                  });
+                },
               );
             },
             childCount: widget.tasks.length + 1,
