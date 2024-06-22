@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/themes.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_screen.dart';
 
 void main() async {
+  logger.d("Starting the app!");
   await initializeDateFormatting('ru_RU', null);
   runApp(const MyApp());
 }

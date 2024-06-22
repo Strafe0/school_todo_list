@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/utils/dismissible_backgrounds.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
@@ -24,7 +25,7 @@ class _TaskListTileState extends State<TaskListTile> {
       background: const DismissibleBackground(),
       secondaryBackground: const DismissibleSecondaryBackground(),
       onDismissed: (direction) {
-        debugPrint("Dismissible direction: $direction");
+        logger.d("Dismissible action: $direction");
       },
       confirmDismiss: (direction) {
         if (direction == DismissDirection.startToEnd) {
@@ -49,6 +50,7 @@ class _TaskListTileState extends State<TaskListTile> {
             : null,
         value: widget.task.isCompleted,
         onChanged: (bool? value) {
+          logger.d("Toggle task ${widget.task.id}. New value: $value");
           setState(() {
             widget.task.toggle();
           });
@@ -120,7 +122,7 @@ class TaskInfoButton extends StatelessWidget {
     return IconButton(
       padding: EdgeInsets.zero,
       onPressed: () {
-        debugPrint("info pressed");
+        logger.d("Go to TaskEditScreen for editing");
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => TaskEditScreen(taskForEdit: task),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
@@ -69,6 +70,7 @@ class TaskEditScreenAppBar extends StatelessWidget implements PreferredSizeWidge
         width: 24,
         child: IconButton(
           onPressed: () {
+            logger.d("TaskEditScreen close");
             Navigator.of(context).pop();
           },
           icon: const Icon(Icons.close),
@@ -76,7 +78,9 @@ class TaskEditScreenAppBar extends StatelessWidget implements PreferredSizeWidge
       ),
       actions: [
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            logger.d("Save pressed");
+          },
           child: Text("Сохранить".toUpperCase()),
         ),
       ],
@@ -94,33 +98,6 @@ class TaskEditScreenAppBar extends StatelessWidget implements PreferredSizeWidge
   
   @override
   Size get preferredSize => const Size.fromHeight(56);
-}
-
-class ActionButtons extends StatelessWidget {
-  const ActionButtons({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SizedBox(
-          height: 24,
-          width: 24,
-          child: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: const Icon(Icons.close),
-          ),
-        ),
-        const Spacer(),
-        TextButton(
-          onPressed: () {},
-          child: Text("Сохранить".toUpperCase()),
-        ),
-      ],
-    );
-  }
 }
 
 class TaskTextField extends StatefulWidget {
@@ -201,6 +178,7 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           onPressed: () {
+            logger.d("Selected Importance.none");
             setState(() {
               widget.task.importance = Importance.none;
             });
@@ -213,6 +191,7 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
                 importance: Importance.low, text: "Низкая"),
           ),
           onPressed: () {
+            logger.d("Selected Importance.low");
             setState(() {
               widget.task.importance = Importance.low;
             });
@@ -227,6 +206,7 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
                 importance: Importance.high, text: "Высокая"),
           ),
           onPressed: () {
+            logger.d("Selected Importance.high");
             setState(() {
               widget.task.importance = Importance.high;
             });
@@ -296,6 +276,7 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
         
         setState(() {
           hasDeadline = pickedDateTime != null;
+          logger.d("Selected deadline: $pickedDateTime");
         });
       },
       contentPadding: const EdgeInsets.only(left: 16, right: 0),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_tile.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
@@ -68,6 +69,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
             const TaskListScreenAppBar(),
             CompletedTasksCounter(
               filterTasks: (bool showCompletedTasks) {
+                logger.d("Visibility button pressed");
                 setState(() {
                   if (showCompletedTasks) {
                     tasks = allTasks;
@@ -81,11 +83,14 @@ class _TodoListScreenState extends State<TodoListScreen> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const TaskEditScreen(),
-            ),
-          ),
+          onPressed: () {
+            logger.d("Go to TaskEditScreen for creation");
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const TaskEditScreen(),
+              ),
+            );
+          },
           child: const Icon(Icons.add),
         ),
       ),
@@ -212,6 +217,7 @@ class _TaskListState extends State<TaskList> {
               return TaskListTile(
                 task: widget.tasks[index],
                 remove: (id) {
+                  logger.i("Deleting task ${widget.tasks[index].id}: ${widget.tasks[index].title}");
                   setState(() {
                     widget.tasks.removeWhere(
                       (t) => t.id == id,
