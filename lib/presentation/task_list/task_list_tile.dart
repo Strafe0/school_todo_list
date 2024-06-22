@@ -123,7 +123,7 @@ class TaskInfoButton extends StatelessWidget {
         debugPrint("info pressed");
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => TaskEditScreen(task: task),
+            builder: (context) => TaskEditScreen(taskForEdit: task),
           ),
         );
       },

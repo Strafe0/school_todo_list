@@ -3,10 +3,6 @@ import 'package:flutter/material.dart';
 const Color shadow6 = Color(0x0F000000);
 const Color shadow12 = Color(0x1F000000);
 
-const ButtonStyle buttonStyle = ButtonStyle(
-  padding: WidgetStatePropertyAll(EdgeInsets.zero),
-);
-
 final lightTheme = ThemeData(
   colorScheme: const ColorScheme(
     brightness: Brightness.light,

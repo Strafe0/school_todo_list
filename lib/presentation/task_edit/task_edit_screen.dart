@@ -9,10 +9,10 @@ import 'package:school_todo_list/presentation/utils/text_with_importance_level.d
 class TaskEditScreen extends StatefulWidget {
   const TaskEditScreen({
     super.key,
-    this.task,
+    this.taskForEdit,
   });
 
-  final Task? task;
+  final Task? taskForEdit;
 
   @override
   State<TaskEditScreen> createState() => _TaskEditScreenState();
@@ -24,8 +24,8 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.task != null) {
-      task = widget.task!;
+    if (widget.taskForEdit != null) {
+      task = widget.taskForEdit!;
     } else {
       task = Task(title: '');
     }
@@ -46,7 +46,9 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
                 const Divider(),
                 TaskDeadlineField(task: task),
                 const Divider(),
-                const DeleteTaskButton(),
+                DeleteTaskButton(
+                  deleteTask: widget.taskForEdit != null ? () {} : null,
+                ),
               ],
             ),
           ),
@@ -313,18 +315,26 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
 }
 
 class DeleteTaskButton extends StatelessWidget {
-  const DeleteTaskButton({super.key});
+  const DeleteTaskButton({super.key, this.deleteTask});
+
+  final void Function()? deleteTask;
 
   @override
   Widget build(BuildContext context) {
+    bool enabled = deleteTask != null;
+
     return ListTile(
+      enabled: enabled,
+      horizontalTitleGap: 16,
       title: Text(
         "Удалить",
-        style: TextStyle(color: Colors.red),
+        style: TextStyle(
+          color: enabled ? Colors.red : Theme.of(context).colorScheme.tertiary,
+        ),
       ),
-      trailing: Icon(
+      leading: Icon(
         Icons.delete,
-        color: Colors.red,
+        color: enabled ? Colors.red : Theme.of(context).colorScheme.tertiary,
       ),
     );
   }
