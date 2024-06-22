@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
-import 'package:school_todo_list/presentation/task_list/dismissible_backgrounds.dart';
+import 'package:school_todo_list/presentation/utils/dismissible_backgrounds.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
@@ -54,7 +54,7 @@ class _TaskListTileState extends State<TaskListTile> {
         },
         contentPadding: const EdgeInsets.only(
           left: 8.0,
-          right: 16.0,
+          right: 8.0,
         ),
         controlAffinity: ListTileControlAffinity.leading,
         fillColor: WidgetStatePropertyAll(widget.task.isCompleted
@@ -116,24 +116,20 @@ class TaskInfoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 24,
-      width: 24,
-      child: IconButton(
-        padding: EdgeInsets.zero,
-        onPressed: () {
-          debugPrint("info pressed");
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => TaskEditScreen(task: task),
-            ),
-          );
-        },
-        icon: Icon(
-          Icons.info_outline,
-          color: Theme.of(context).colorScheme.tertiary,
-          size: 24,
-        ),
+    return IconButton(
+      padding: EdgeInsets.zero,
+      onPressed: () {
+        debugPrint("info pressed");
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => TaskEditScreen(task: task),
+          ),
+        );
+      },
+      icon: Icon(
+        Icons.info_outline,
+        color: Theme.of(context).colorScheme.tertiary,
+        size: 24,
       ),
     );
   }

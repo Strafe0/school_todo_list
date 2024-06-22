@@ -77,7 +77,8 @@ class TaskListScreenAppBar extends StatelessWidget {
       collapsedHeight: 88,
       elevation: 4,
       shadowColor: Theme.of(context).colorScheme.surface,
-      surfaceTintColor: Colors.transparent,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surface,
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
           "Мои дела",

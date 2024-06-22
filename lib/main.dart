@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       home: const TodoListScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

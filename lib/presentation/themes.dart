@@ -56,8 +56,20 @@ final lightTheme = ThemeData(
       fontWeight: FontWeight.w400,
     ),
   ),
-  iconButtonTheme: const IconButtonThemeData(style: buttonStyle),
-  textButtonTheme: const TextButtonThemeData(style: buttonStyle),
+  iconButtonTheme: const IconButtonThemeData(
+    style: ButtonStyle(
+      padding: WidgetStatePropertyAll(
+        EdgeInsets.all(16),
+      ),
+    )
+  ),
+  textButtonTheme: const TextButtonThemeData(
+    style: ButtonStyle(
+      padding: WidgetStatePropertyAll(
+        EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      ),
+    ),
+  ),
   listTileTheme: const ListTileThemeData(
     horizontalTitleGap: 4.0,
   ),
@@ -116,8 +128,20 @@ final darkTheme = ThemeData(
       fontWeight: FontWeight.w400,
     ),
   ),
-  iconButtonTheme: const IconButtonThemeData(style: buttonStyle),
-  textButtonTheme: const TextButtonThemeData(style: buttonStyle),
+  iconButtonTheme: const IconButtonThemeData(
+    style: ButtonStyle(
+      padding: WidgetStatePropertyAll(
+        EdgeInsets.all(16),
+      ),
+    )
+  ),
+  textButtonTheme: const TextButtonThemeData(
+    style: ButtonStyle(
+      padding: WidgetStatePropertyAll(
+        EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      ),
+    ),
+  ),
   listTileTheme: const ListTileThemeData(
     horizontalTitleGap: 4.0,
   ),

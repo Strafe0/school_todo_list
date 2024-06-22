@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
@@ -34,12 +35,12 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: const TaskEditScreenAppBar(),
         body: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const ActionButtons(),
                 TaskTextField(task: task),
                 TaskImportanceField(task: task),
                 const Divider(),
@@ -53,6 +54,51 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
       ),
     );
   }
+}
+
+class TaskEditScreenAppBar extends StatelessWidget implements PreferredSizeWidget{
+  const TaskEditScreenAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Theme.of(context).colorScheme.surface,
+      statusBarIconBrightness: Theme.of(context).brightness == Brightness.dark
+          ? Brightness.light
+          : Brightness.dark,
+    ));
+
+    return AppBar(
+      leading: SizedBox(
+        height: 24,
+        width: 24,
+        child: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.close),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {},
+          child: Text("Сохранить".toUpperCase()),
+        ),
+      ],
+      elevation: 0,
+      scrolledUnderElevation: 4,
+      shadowColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      surfaceTintColor: Theme.of(context).colorScheme.surface,
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarBrightness: Theme.of(context).brightness,
+        statusBarColor: Theme.of(context).colorScheme.surface,
+      ),
+    );
+  }
+  
+  @override
+  Size get preferredSize => const Size.fromHeight(56);
 }
 
 class ActionButtons extends StatelessWidget {
