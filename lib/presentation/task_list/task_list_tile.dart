@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/task_list/dismissible_backgrounds.dart';
+import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
 class TaskListTile extends StatefulWidget {
   const TaskListTile({super.key, required this.tasks, required this.index});
@@ -57,21 +58,7 @@ class _TaskListTileState extends State<TaskListTile> {
         checkboxShape: checkboxShape(widget.tasks[widget.index]),
         side: BorderSide(color: Theme.of(context).dividerColor, width: 2),
         title: TaskTitle(task: widget.tasks[widget.index]),
-        secondary: SizedBox(
-          height: 24,
-          width: 24,
-          child: IconButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {
-              debugPrint("info pressed");
-            },
-            icon: Icon(
-              Icons.info_outline,
-              color: Theme.of(context).colorScheme.tertiary,
-              size: 24,
-            ),
-          ),
-        ),
+        secondary: TaskInfoButton(task: widget.tasks[widget.index]),
       ),
     );
   }
@@ -105,26 +92,42 @@ class TaskTitle extends StatelessWidget {
             : null,
         decorationColor: Theme.of(context).dividerColor,
       ),
-      TextSpan(
-        children: [
-          if (task.importance == Importance.high)
-            const WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: Icon(
-                Icons.priority_high,
-                color: Colors.red,
-              ),
+      createTextSpanWithImportance(
+        importance: task.importance,
+        text: task.title,
+      ),
+    );
+  }
+}
+
+class TaskInfoButton extends StatelessWidget {
+  const TaskInfoButton({
+    super.key,
+    required this.task,
+  });
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 24,
+      width: 24,
+      child: IconButton(
+        padding: EdgeInsets.zero,
+        onPressed: () {
+          debugPrint("info pressed");
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => TaskEditScreen(task: task),
             ),
-          if (task.importance == Importance.low) 
-            const WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: Icon(
-                Icons.arrow_downward,
-                color: Colors.grey,
-              ),
-            ),
-          TextSpan(text: task.title),
-        ],
+          );
+        },
+        icon: Icon(
+          Icons.info_outline,
+          color: Theme.of(context).colorScheme.tertiary,
+          size: 24,
+        ),
       ),
     );
   }

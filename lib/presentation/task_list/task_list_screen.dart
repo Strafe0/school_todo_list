@@ -52,7 +52,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TaskEditScreen())),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const TaskEditScreen(),
+            ),
+          ),
           child: const Icon(Icons.add),
         ),
       ),
