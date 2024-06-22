@@ -25,63 +25,66 @@ class TaskListTile extends StatefulWidget {
 class _TaskListTileState extends State<TaskListTile> {
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: ValueKey(widget.task),
-      direction: DismissDirection.horizontal,
-      background: const DismissibleBackground(),
-      secondaryBackground: const DismissibleSecondaryBackground(),
-      onDismissed: (direction) {
-        logger.d("Dismissible action: $direction");
-      },
-      confirmDismiss: (direction) {
-        if (direction == DismissDirection.startToEnd) {
-          setState(() {
-            widget.task.toggle();
-            widget.updateList();
-          });
-        } else if (direction == DismissDirection.endToStart) {
-          setState(() {
-            widget.remove(widget.task.id);
-          });
-        }
-
-        return Future.value(false);
-      },
-      child: CheckboxListTile(
-        title: TaskTitle(task: widget.task),
-        subtitle: widget.task.hasDeadline
-            ? TaskDeadline(
-                deadline: widget.task.deadline!,
-                isCompleted: widget.task.isCompleted,
-              )
-            : null,
-        value: widget.task.isCompleted,
-        onChanged: (bool? value) {
-          logger.d("Toggle task ${widget.task.id}. New value: $value");
-          setState(() {
-            widget.task.toggle();
-            widget.updateList();
-          });
+    return ClipRRect(
+      clipBehavior: Clip.hardEdge,
+      child: Dismissible(
+        key: ValueKey(widget.task),
+        direction: DismissDirection.horizontal,
+        background: const DismissibleBackground(),
+        secondaryBackground: const DismissibleSecondaryBackground(),
+        onDismissed: (direction) {
+          logger.d("Dismissible action: $direction");
         },
-        contentPadding: const EdgeInsets.only(
-          left: 8.0,
-          right: 8.0,
-        ),
-        controlAffinity: ListTileControlAffinity.leading,
-        fillColor: WidgetStatePropertyAll(
-          widget.task.isCompleted
-              ? Theme.of(context).colorScheme.secondary
+        confirmDismiss: (direction) {
+          if (direction == DismissDirection.startToEnd) {
+            setState(() {
+              widget.task.toggle();
+              widget.updateList();
+            });
+          } else if (direction == DismissDirection.endToStart) {
+            setState(() {
+              widget.remove(widget.task.id);
+            });
+          }
+
+          return Future.value(false);
+        },
+        child: CheckboxListTile(
+          title: TaskTitle(task: widget.task),
+          subtitle: widget.task.hasDeadline
+              ? TaskDeadline(
+                  deadline: widget.task.deadline!,
+                  isCompleted: widget.task.isCompleted,
+                )
               : null,
+          value: widget.task.isCompleted,
+          onChanged: (bool? value) {
+            logger.d("Toggle task ${widget.task.id}. New value: $value");
+            setState(() {
+              widget.task.toggle();
+              widget.updateList();
+            });
+          },
+          contentPadding: const EdgeInsets.only(
+            left: 8.0,
+            right: 8.0,
+          ),
+          controlAffinity: ListTileControlAffinity.leading,
+          fillColor: WidgetStatePropertyAll(
+            widget.task.isCompleted
+                ? Theme.of(context).colorScheme.secondary
+                : null,
+          ),
+          checkColor: Theme.of(context).colorScheme.surfaceContainer,
+          checkboxShape: checkboxShape(widget.task),
+          side: BorderSide(
+            color: widget.task.importance == Importance.high
+                ? Theme.of(context).colorScheme.error
+                : Theme.of(context).dividerColor,
+            width: 2,
+          ),
+          secondary: TaskInfoButton(task: widget.task),
         ),
-        checkColor: Theme.of(context).colorScheme.surfaceContainer,
-        checkboxShape: checkboxShape(widget.task),
-        side: BorderSide(
-          color: widget.task.importance == Importance.high
-              ? Theme.of(context).colorScheme.error
-              : Theme.of(context).dividerColor,
-          width: 2,
-        ),
-        secondary: TaskInfoButton(task: widget.task),
       ),
     );
   }
