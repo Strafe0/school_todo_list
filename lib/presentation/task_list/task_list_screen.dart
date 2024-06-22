@@ -76,7 +76,7 @@ class TaskListScreenAppBar extends StatelessWidget {
       expandedHeight: 148,
       collapsedHeight: 88,
       elevation: 4,
-      shadowColor: Colors.grey,
+      shadowColor: Theme.of(context).colorScheme.surface,
       surfaceTintColor: Colors.transparent,
       flexibleSpace: FlexibleSpaceBar(
         title: Text(
@@ -115,13 +115,15 @@ class _TaskListState extends State<TaskList> {
             (BuildContext context, int index) {
               if (index == tasks.length) {
                 return Padding(
-                  padding: const EdgeInsets.only(left: 72.0),
+                  padding: const EdgeInsets.only(left: 52.0, bottom: 8),
                   child: TextField(
                     focusNode: _focusNode,
                     decoration: const InputDecoration(
                       labelText: "Новое",
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
                       border: InputBorder.none,
                     ),
+                    textAlignVertical: TextAlignVertical.center,
                     onTapOutside: (event) => _focusNode.unfocus(),
                   ),
                 );

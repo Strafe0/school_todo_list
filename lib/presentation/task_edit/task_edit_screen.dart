@@ -36,16 +36,18 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              const ActionButtons(),
-              TaskTextField(task: task),
-              TaskImportanceField(task: task),
-              const Divider(),
-              TaskDeadlineField(task: task),
-              const Divider(),
-              const DeleteTaskButton(),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const ActionButtons(),
+                TaskTextField(task: task),
+                TaskImportanceField(task: task),
+                const Divider(),
+                TaskDeadlineField(task: task),
+                const Divider(),
+                const DeleteTaskButton(),
+              ],
+            ),
           ),
         ),
       ),
@@ -107,24 +109,24 @@ class _TaskTextFieldState extends State<TaskTextField> {
         decoration: boxDecorationWithShadow(
           color: Theme.of(context).colorScheme.surfaceContainer,
         ),
-        child: SizedBox(
-          height: 104,
-          child: TextField(
-            focusNode: _focusNode,
-            controller: _textController,
-            expands: true,
-            maxLines: null,
-            textAlign: TextAlign.start,
-            textAlignVertical: TextAlignVertical.top,
-            onTapOutside: (event) => _focusNode.unfocus(),
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Theme.of(context).colorScheme.surfaceContainer,
-              floatingLabelAlignment: FloatingLabelAlignment.start,
-              alignLabelWithHint: true,
-              labelText: "Что нужно сделать...",
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              border: InputBorder.none,
+        child: TextField(
+          focusNode: _focusNode,
+          controller: _textController,
+          minLines: 4,
+          maxLines: null,
+          textAlign: TextAlign.start,
+          textAlignVertical: TextAlignVertical.top,
+          onTapOutside: (event) => _focusNode.unfocus(),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.surfaceContainer,
+            floatingLabelAlignment: FloatingLabelAlignment.start,
+            alignLabelWithHint: true,
+            labelText: "Что нужно сделать...",
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         ),
