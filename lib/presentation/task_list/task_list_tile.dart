@@ -7,10 +7,15 @@ import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
 class TaskListTile extends StatefulWidget {
-  const TaskListTile({super.key, required this.task, required this.remove});
+  const TaskListTile(
+      {super.key,
+      required this.task,
+      required this.remove,
+      required this.updateList});
 
   final Task task;
   final void Function(String id) remove;
+  final void Function() updateList;
 
   @override
   State<TaskListTile> createState() => _TaskListTileState();
@@ -31,6 +36,7 @@ class _TaskListTileState extends State<TaskListTile> {
         if (direction == DismissDirection.startToEnd) {
           setState(() {
             widget.task.toggle();
+            widget.updateList();
           });
         } else if (direction == DismissDirection.endToStart) {
           setState(() {
@@ -53,6 +59,7 @@ class _TaskListTileState extends State<TaskListTile> {
           logger.d("Toggle task ${widget.task.id}. New value: $value");
           setState(() {
             widget.task.toggle();
+            widget.updateList();
           });
         },
         contentPadding: const EdgeInsets.only(

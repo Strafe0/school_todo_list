@@ -45,6 +45,7 @@ class TodoListScreen extends StatefulWidget {
 
 class _TodoListScreenState extends State<TodoListScreen> {
   List<Task> tasks = [];
+  final ValueNotifier<bool> completedTasksVisibility = ValueNotifier(false);
 
   @override
   void initState() {
@@ -68,18 +69,23 @@ class _TodoListScreenState extends State<TodoListScreen> {
           slivers: [
             const TaskListScreenAppBar(),
             CompletedTasksCounter(
-              filterTasks: (bool showCompletedTasks) {
-                logger.d("Visibility button pressed");
-                setState(() {
-                  if (showCompletedTasks) {
-                    tasks = allTasks;
-                  } else {
-                    tasks = tasks.where((t) => !t.isCompleted).toList();
-                  }
-                });
+              completedTasksVisibility: completedTasksVisibility,
+            ),
+            ValueListenableBuilder(
+              valueListenable: completedTasksVisibility,
+              builder: (context, showCompletedTasks, child) {
+                if (showCompletedTasks) {
+                  tasks = allTasks;
+                } else {
+                  tasks = tasks.where((t) => !t.isCompleted).toList();
+                }
+
+                return TaskList(
+                  tasks: tasks,
+                  updateList: () => setState(() {}),
+                );
               },
             ),
-            TaskList(tasks: tasks),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -126,17 +132,18 @@ class TaskListScreenAppBar extends StatelessWidget {
 }
 
 class CompletedTasksCounter extends StatefulWidget {
-  const CompletedTasksCounter({super.key, required this.filterTasks});
+  const CompletedTasksCounter({
+    super.key,
+    required this.completedTasksVisibility,
+  });
 
-  final void Function(bool showCompletedTasks) filterTasks;
+  final ValueNotifier<bool> completedTasksVisibility;
 
   @override
   State<CompletedTasksCounter> createState() => _CompletedTasksCounterState();
 }
 
 class _CompletedTasksCounterState extends State<CompletedTasksCounter> {
-  bool showCompletedTasks = false;
-
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
@@ -155,12 +162,14 @@ class _CompletedTasksCounterState extends State<CompletedTasksCounter> {
             IconButton(
               onPressed: () {
                 setState(() {
-                  showCompletedTasks = !showCompletedTasks;
-                  widget.filterTasks(showCompletedTasks);
+                  widget.completedTasksVisibility.value =
+                      !widget.completedTasksVisibility.value;
                 });
               },
               icon: Icon(
-                showCompletedTasks ? Icons.visibility_off : Icons.visibility,
+                widget.completedTasksVisibility.value
+                    ? Icons.visibility_off
+                    : Icons.visibility,
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
@@ -172,9 +181,14 @@ class _CompletedTasksCounterState extends State<CompletedTasksCounter> {
 }
 
 class TaskList extends StatefulWidget {
-  const TaskList({super.key, required this.tasks});
+  const TaskList({
+    super.key,
+    required this.tasks,
+    required this.updateList,
+  });
 
   final List<Task> tasks;
+  final void Function() updateList;
 
   @override
   State<TaskList> createState() => _TaskListState();
@@ -216,6 +230,7 @@ class _TaskListState extends State<TaskList> {
 
               return TaskListTile(
                 task: widget.tasks[index],
+                updateList: widget.updateList,
                 remove: (id) {
                   logger.i(
                     "Deleting task ${widget.tasks[index].id}: "
