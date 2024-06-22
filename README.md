@@ -1,6 +1,7 @@
 # school_todo_list
 
 Flutter проект мобильного приложения "TODO лист".
+[Скачать APK файл](https://github.com/Strafe0/school_todo_list/releases/download/homework/todo-app-homework-1.apk)
 
 ## Реализованные фичи
 - Сверстаны оба экрана: 
