@@ -12,8 +12,8 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
   final ValueNotifier<bool> completedTasksVisibility;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    debugPrint("shrinkOffset: $shrinkOffset");
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -29,9 +29,8 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
           child: Text(
             "Мои дела",
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontSize: (32 - shrinkOffset / 3).clamp(20, 32),
-              // fontSize: (20 * (maxExtent - minExtent) / shrinkOffset).clamp(20, 32),
-            ),
+                  fontSize: (32 - shrinkOffset / 3).clamp(20, 32),
+                ),
           ),
         ),
         Align(

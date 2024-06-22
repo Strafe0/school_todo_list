@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
@@ -74,7 +75,12 @@ class _TaskListTileState extends State<TaskListTile> {
         ),
         checkColor: Theme.of(context).colorScheme.surfaceContainer,
         checkboxShape: checkboxShape(widget.task),
-        side: BorderSide(color: Theme.of(context).dividerColor, width: 2),
+        side: BorderSide(
+          color: widget.task.importance == Importance.high
+              ? Theme.of(context).colorScheme.error
+              : Theme.of(context).dividerColor,
+          width: 2,
+        ),
         secondary: TaskInfoButton(task: widget.task),
       ),
     );
