@@ -98,6 +98,10 @@ final lightTheme = ThemeData(
     // trackOutlineColor: const WidgetStatePropertyAll(Color(0x4D000000)),
     trackOutlineWidth: const WidgetStatePropertyAll(1),
   ),
+  datePickerTheme: const DatePickerThemeData(
+    headerBackgroundColor: Color(0xFF007AFF),
+    headerForegroundColor: Colors.white,
+  )
 );
 
 final darkTheme = ThemeData(
@@ -194,4 +198,8 @@ final darkTheme = ThemeData(
     }),
     trackOutlineWidth: const WidgetStatePropertyAll(1),
   ),
+  datePickerTheme: const DatePickerThemeData(
+    headerBackgroundColor: Color(0xFF007AFF),
+    headerForegroundColor: Colors.white,
+  )
 );

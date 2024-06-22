@@ -286,16 +286,16 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
         if (value) {
           pickedDateTime = await showDatePicker(
             context: context,
-            initialDate: pickedDateTime,
+            initialDate: pickedDateTime ?? DateTime.now(),
             firstDate: DateTime(2000),
             lastDate: DateTime(2030),
           );
         } else {
           pickedDateTime = null;
         }
-
+        
         setState(() {
-          hasDeadline = value;
+          hasDeadline = pickedDateTime != null;
         });
       },
       contentPadding: const EdgeInsets.only(left: 16, right: 0),
