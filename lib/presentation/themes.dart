@@ -73,6 +73,31 @@ final lightTheme = ThemeData(
   dividerTheme: const DividerThemeData(
     color: Color(0x33000000),
   ),
+  switchTheme: SwitchThemeData(
+    thumbColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return const Color(0xFF007AFF);
+      } else {
+        return const Color(0x4D000000);
+      }
+    }),
+    trackColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return const Color(0x33007AFF);
+      } else {
+        return const Color(0xFFF7F6F2);
+      }
+    }),
+    trackOutlineColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return Colors.transparent;
+      } else {
+        return const Color(0x4D000000);
+      }
+    }),
+    // trackOutlineColor: const WidgetStatePropertyAll(Color(0x4D000000)),
+    trackOutlineWidth: const WidgetStatePropertyAll(1),
+  ),
 );
 
 final darkTheme = ThemeData(
@@ -144,5 +169,29 @@ final darkTheme = ThemeData(
   dividerColor: const Color(0x33FFFFFF),
   dividerTheme: const DividerThemeData(
     color: Color(0x33FFFFFF),
+  ),
+  switchTheme: SwitchThemeData(
+    thumbColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return const Color(0xFF0A84FF);
+      } else {
+        return const Color(0x66FFFFFF);
+      }
+    }),
+    trackColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return const Color(0x330A84FF);
+      } else {
+        return const Color(0xFF161618);
+      }
+    }),
+    trackOutlineColor: WidgetStateColor.resolveWith((Set<WidgetState> states) {
+      if (states.contains(WidgetState.selected)) {
+        return Colors.transparent;
+      } else {
+        return const Color(0x66FFFFFF);
+      }
+    }),
+    trackOutlineWidth: const WidgetStatePropertyAll(1),
   ),
 );

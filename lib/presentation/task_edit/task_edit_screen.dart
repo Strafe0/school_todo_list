@@ -298,6 +298,7 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
           hasDeadline = value;
         });
       },
+      contentPadding: const EdgeInsets.only(left: 16, right: 0),
     );
   }
 
