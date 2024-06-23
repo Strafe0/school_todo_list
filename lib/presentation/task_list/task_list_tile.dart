@@ -60,9 +60,45 @@ class _TaskListTileState extends State<TaskListTile> {
 
           return Future.value(false);
         },
+<<<<<<< HEAD
         child: TaskTile(
           task: widget.task,
           updateList: widget.updateList,
+=======
+        child: CheckboxListTile(
+          title: TaskTitle(task: widget.task),
+          subtitle: widget.task.hasDeadline
+              ? TaskDeadline(
+                  deadline: widget.task.deadline!,
+                  isCompleted: widget.task.done,
+                )
+              : null,
+          value: widget.task.done,
+          onChanged: (bool? value) {
+            logger.d("Toggle task ${widget.task.id}. New value: $value");
+            setState(() {
+              widget.task.toggle();
+              widget.updateList();
+            });
+          },
+          contentPadding: const EdgeInsets.only(
+            left: 8.0,
+            right: 8.0,
+          ),
+          controlAffinity: ListTileControlAffinity.leading,
+          fillColor: WidgetStatePropertyAll(
+            widget.task.done ? Theme.of(context).colorScheme.secondary : null,
+          ),
+          checkColor: Theme.of(context).colorScheme.surfaceContainer,
+          checkboxShape: checkboxShape(widget.task),
+          side: BorderSide(
+            color: widget.task.importance == Importance.high
+                ? Theme.of(context).colorScheme.error
+                : Theme.of(context).dividerColor,
+            width: 2,
+          ),
+          secondary: TaskInfoButton(task: widget.task),
+>>>>>>> 9174337 (Added new interfaces for data sources and task repository, task dto)
         ),
       ),
     );
@@ -146,10 +182,10 @@ class TaskTitle extends StatelessWidget {
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-        color: task.isCompleted
+        color: task.done
             ? Theme.of(context).dividerColor
             : Theme.of(context).colorScheme.onSurface,
-        decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+        decoration: task.done ? TextDecoration.lineThrough : null,
         decorationColor: Theme.of(context).dividerColor,
       ),
       createTextSpanWithImportance(

@@ -84,7 +84,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                 if (showCompletedTasks) {
                   tasks = allTasks;
                 } else {
-                  tasks = tasks.where((t) => !t.isCompleted).toList();
+                  tasks = tasks.where((t) => !t.done).toList();
                 }
 
                 return TaskList(

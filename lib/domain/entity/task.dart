@@ -6,21 +6,19 @@ class Task {
     required this.title,
     this.importance = Importance.none,
     this.deadline,
-    bool isCompleted = false,
-  })  : id = const Uuid().v1(),
-        _isCompleted = isCompleted;
+    this.done = false,
+  }) : id = const Uuid().v1();
 
   String id;
   String title;
   Importance importance;
   DateTime? deadline;
 
-  bool _isCompleted;
-  bool get isCompleted => _isCompleted;
+  bool done;
 
   bool get hasDeadline => deadline != null;
 
   void toggle() {
-    _isCompleted = !_isCompleted;
+    done = !done;
   }
 }
