@@ -60,45 +60,9 @@ class _TaskListTileState extends State<TaskListTile> {
 
           return Future.value(false);
         },
-<<<<<<< HEAD
         child: TaskTile(
           task: widget.task,
           updateList: widget.updateList,
-=======
-        child: CheckboxListTile(
-          title: TaskTitle(task: widget.task),
-          subtitle: widget.task.hasDeadline
-              ? TaskDeadline(
-                  deadline: widget.task.deadline!,
-                  isCompleted: widget.task.done,
-                )
-              : null,
-          value: widget.task.done,
-          onChanged: (bool? value) {
-            logger.d("Toggle task ${widget.task.id}. New value: $value");
-            setState(() {
-              widget.task.toggle();
-              widget.updateList();
-            });
-          },
-          contentPadding: const EdgeInsets.only(
-            left: 8.0,
-            right: 8.0,
-          ),
-          controlAffinity: ListTileControlAffinity.leading,
-          fillColor: WidgetStatePropertyAll(
-            widget.task.done ? Theme.of(context).colorScheme.secondary : null,
-          ),
-          checkColor: Theme.of(context).colorScheme.surfaceContainer,
-          checkboxShape: checkboxShape(widget.task),
-          side: BorderSide(
-            color: widget.task.importance == Importance.high
-                ? Theme.of(context).colorScheme.error
-                : Theme.of(context).dividerColor,
-            width: 2,
-          ),
-          secondary: TaskInfoButton(task: widget.task),
->>>>>>> 9174337 (Added new interfaces for data sources and task repository, task dto)
         ),
       ),
     );
@@ -124,7 +88,7 @@ class _TaskTileState extends State<TaskTile> {
   Widget build(BuildContext context) {
     return ListTile(
       leading: Checkbox(
-        value: widget.task.isCompleted,
+        value: widget.task.done,
         onChanged: (bool? value) {
           logger.d("Toggle task ${widget.task.id}. New value: $value");
           setState(() {
@@ -133,7 +97,7 @@ class _TaskTileState extends State<TaskTile> {
           });
         },
         fillColor: WidgetStatePropertyAll(
-          widget.task.isCompleted
+          widget.task.done
               ? Theme.of(context).colorScheme.secondary
               : null,
         ),
@@ -150,7 +114,7 @@ class _TaskTileState extends State<TaskTile> {
       subtitle: widget.task.hasDeadline
           ? TaskDeadline(
               deadline: widget.task.deadline!,
-              isCompleted: widget.task.isCompleted,
+              isCompleted: widget.task.done,
             )
           : null,
       contentPadding: const EdgeInsets.only(
