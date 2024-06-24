@@ -61,6 +61,8 @@ class _TodoListScreenState extends State<TodoListScreen> {
       statusBarIconBrightness: Theme.of(context).brightness == Brightness.dark
           ? Brightness.light
           : Brightness.dark,
+      systemNavigationBarColor: Theme.of(context).colorScheme.surface,
+      systemNavigationBarDividerColor: Theme.of(context).colorScheme.surface,
     ));
 
     return SafeArea(
@@ -135,7 +137,7 @@ class _TaskListState extends State<TaskList> {
         bottom: 28,
       ),
       sliver: DecoratedSliver(
-        decoration: boxDecorationWithShadow(
+        decoration: defaultBoxDecoration.copyWith(
           color: Theme.of(context).colorScheme.surfaceContainer,
         ),
         sliver: SliverList(

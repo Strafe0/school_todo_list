@@ -3,16 +3,17 @@ import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
-import 'package:school_todo_list/presentation/utils/dismissible_backgrounds.dart';
+import 'package:school_todo_list/presentation/utils/dismissible_background.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
 class TaskListTile extends StatefulWidget {
-  const TaskListTile(
-      {super.key,
-      required this.task,
-      required this.remove,
-      required this.updateList});
+  const TaskListTile({
+    super.key,
+    required this.task,
+    required this.remove,
+    required this.updateList,
+  });
 
   final Task task;
   final void Function(String id) remove;
@@ -30,8 +31,18 @@ class _TaskListTileState extends State<TaskListTile> {
       child: Dismissible(
         key: ValueKey(widget.task),
         direction: DismissDirection.horizontal,
-        background: const DismissibleBackground(),
-        secondaryBackground: const DismissibleSecondaryBackground(),
+        background: DismissibleBackground(
+          color: Theme.of(context).colorScheme.secondary,
+          padding: const EdgeInsets.only(left: 24.0),
+          icon: Icons.check,
+          iconColor: Theme.of(context).colorScheme.onSecondary,
+        ),
+        secondaryBackground: DismissibleBackground(
+          color: Theme.of(context).colorScheme.error,
+          padding: const EdgeInsets.only(right: 24),
+          icon: Icons.check,
+          iconColor: Theme.of(context).colorScheme.onError,
+        ),
         onDismissed: (direction) {
           logger.d("Dismissible action: $direction");
         },
@@ -49,43 +60,68 @@ class _TaskListTileState extends State<TaskListTile> {
 
           return Future.value(false);
         },
-        child: CheckboxListTile(
-          title: TaskTitle(task: widget.task),
-          subtitle: widget.task.hasDeadline
-              ? TaskDeadline(
-                  deadline: widget.task.deadline!,
-                  isCompleted: widget.task.isCompleted,
-                )
-              : null,
-          value: widget.task.isCompleted,
-          onChanged: (bool? value) {
-            logger.d("Toggle task ${widget.task.id}. New value: $value");
-            setState(() {
-              widget.task.toggle();
-              widget.updateList();
-            });
-          },
-          contentPadding: const EdgeInsets.only(
-            left: 8.0,
-            right: 8.0,
-          ),
-          controlAffinity: ListTileControlAffinity.leading,
-          fillColor: WidgetStatePropertyAll(
-            widget.task.isCompleted
-                ? Theme.of(context).colorScheme.secondary
-                : null,
-          ),
-          checkColor: Theme.of(context).colorScheme.surfaceContainer,
-          checkboxShape: checkboxShape(widget.task),
-          side: BorderSide(
-            color: widget.task.importance == Importance.high
-                ? Theme.of(context).colorScheme.error
-                : Theme.of(context).dividerColor,
-            width: 2,
-          ),
-          secondary: TaskInfoButton(task: widget.task),
+        child: TaskTile(
+          task: widget.task,
+          updateList: widget.updateList,
         ),
       ),
+    );
+  }
+}
+
+class TaskTile extends StatefulWidget {
+  const TaskTile({
+    super.key,
+    required this.task,
+    required this.updateList,
+  });
+
+  final Task task;
+  final void Function() updateList;
+
+  @override
+  State<TaskTile> createState() => _TaskTileState();
+}
+
+class _TaskTileState extends State<TaskTile> {
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Checkbox(
+        value: widget.task.isCompleted,
+        onChanged: (bool? value) {
+          logger.d("Toggle task ${widget.task.id}. New value: $value");
+          setState(() {
+            widget.task.toggle();
+            widget.updateList();
+          });
+        },
+        fillColor: WidgetStatePropertyAll(
+          widget.task.isCompleted
+              ? Theme.of(context).colorScheme.secondary
+              : null,
+        ),
+        checkColor: Theme.of(context).colorScheme.surfaceContainer,
+        shape: checkboxShape(widget.task),
+        side: BorderSide(
+          color: widget.task.importance == Importance.high
+              ? Theme.of(context).colorScheme.error
+              : Theme.of(context).dividerColor,
+          width: 2,
+        ),
+      ),
+      title: TaskTitle(task: widget.task),
+      subtitle: widget.task.hasDeadline
+          ? TaskDeadline(
+              deadline: widget.task.deadline!,
+              isCompleted: widget.task.isCompleted,
+            )
+          : null,
+      contentPadding: const EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+      ),
+      trailing: TaskInfoButton(task: widget.task),
     );
   }
 

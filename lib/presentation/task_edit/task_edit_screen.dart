@@ -125,7 +125,7 @@ class _TaskTextFieldState extends State<TaskTextField> {
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: DecoratedBox(
-        decoration: boxDecorationWithShadow(
+        decoration: defaultBoxDecoration.copyWith(
           color: Theme.of(context).colorScheme.surfaceContainer,
         ),
         child: TextField(
@@ -164,7 +164,8 @@ class TaskImportanceField extends StatefulWidget {
 }
 
 class _TaskImportanceFieldState extends State<TaskImportanceField> {
-  Color? getColor(BuildContext context) => switch (widget.task.importance) {
+  Color? getImportanceColor(BuildContext context) =>
+      switch (widget.task.importance) {
         Importance.high => Theme.of(context).colorScheme.error,
         _ => null,
       };
@@ -218,7 +219,7 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
         return ListTile(
           title: const Text("Важность"),
           subtitle: Text.rich(
-            style: TextStyle(color: getColor(context)),
+            style: TextStyle(color: getImportanceColor(context)),
             createTextSpanWithImportance(
               importance: widget.task.importance,
               text: widget.task.importance.name,
@@ -263,25 +264,27 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
       title: const Text("Сделать до"),
       subtitle: getSubtitle(pickedDateTime),
       value: hasDeadline,
-      onChanged: (value) async {
-        if (value) {
-          pickedDateTime = await showDatePicker(
-            context: context,
-            initialDate: pickedDateTime ?? DateTime.now(),
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2030),
-          );
-        } else {
-          pickedDateTime = null;
-        }
-
-        setState(() {
-          hasDeadline = pickedDateTime != null;
-          logger.d("Selected deadline: $pickedDateTime");
-        });
-      },
+      onChanged: _onSwitchChanged,
       contentPadding: const EdgeInsets.only(left: 16, right: 0),
     );
+  }
+
+  void _onSwitchChanged(bool value) async {
+    if (value) {
+      pickedDateTime = await showDatePicker(
+        context: context,
+        initialDate: pickedDateTime ?? DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2030),
+      );
+    } else {
+      pickedDateTime = null;
+    }
+
+    setState(() {
+      hasDeadline = pickedDateTime != null;
+      logger.d("Selected deadline: $pickedDateTime");
+    });
   }
 
   Text? getSubtitle(DateTime? date) {
@@ -312,12 +315,12 @@ class DeleteTaskButton extends StatelessWidget {
       title: Text(
         "Удалить",
         style: TextStyle(
-          color: enabled ? Colors.red : Theme.of(context).colorScheme.tertiary,
+          color: enabled ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.tertiary,
         ),
       ),
       leading: Icon(
         Icons.delete,
-        color: enabled ? Colors.red : Theme.of(context).colorScheme.tertiary,
+        color: enabled ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.tertiary,
       ),
     );
   }
