@@ -13,9 +13,9 @@ TaskDto _$TaskDtoFromJson(Map<String, dynamic> json) => TaskDto(
       deadline: (json['deadline'] as num?)?.toInt(),
       done: json['done'] as bool,
       color: json['color'] as String?,
-      createdAt: (json['createdAt'] as num).toInt(),
-      changedAt: (json['changedAt'] as num).toInt(),
-      lastUpdatedBy: json['lastUpdatedBy'] as String,
+      createdAt: (json['created_at'] as num).toInt(),
+      changedAt: (json['changed_at'] as num).toInt(),
+      lastUpdatedBy: json['last_updated_by'] as String,
     );
 
 Map<String, dynamic> _$TaskDtoToJson(TaskDto instance) => <String, dynamic>{
@@ -25,7 +25,7 @@ Map<String, dynamic> _$TaskDtoToJson(TaskDto instance) => <String, dynamic>{
       'deadline': instance.deadline,
       'done': instance.done,
       'color': instance.color,
-      'createdAt': instance.createdAt,
-      'changedAt': instance.changedAt,
-      'lastUpdatedBy': instance.lastUpdatedBy,
+      'created_at': instance.createdAt,
+      'changed_at': instance.changedAt,
+      'last_updated_by': instance.lastUpdatedBy,
     };

@@ -17,39 +17,99 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<void> addTask(Task task) async {
-    logger.i("Repo: addTask");
-    TaskDto taskDto = await _remoteSource.addTask(task.toTaskDto());
-    TaskDto cachedTask = await _db.addCachedTask(taskDto);
+    logger.d("Repo: addTask");
+    try {
+      TaskDto taskDto = await _remoteSource.addTask(task.toTaskDto());
+      await _db.addCachedTask(taskDto);
+    } catch (error, stackTrace) {
+      logger.e("Failed to add task", error: error, stackTrace: stackTrace);
+    }
   }
 
   @override
-  Future<void> deleteTask(String id) {
-    // TODO: implement deleteTask
-    throw UnimplementedError();
+  Future<void> deleteTask(String id) async {
+    logger.d("Repo: deleteTask");
+    try {
+      await _remoteSource.deleteTaskById(id);
+      await _db.deleteCachedTaskById(id);
+    } catch (error, stackTrace) {
+      logger.e(
+        "Failed to delete task",
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
   }
 
   @override
-  Future<Task> getTask(String id) {
-    // TODO: implement getTask
-    throw UnimplementedError();
+  Future<Task> getTask(String id) async {
+    logger.d("Repo: getTask");
+    try {
+      TaskDto taskDto = await _remoteSource.getTaskById(id);
+      await _db.updateCachedTask(taskDto);
+
+      return taskDto.toTask();
+    } catch (error, stackTrace) {
+      logger.e(
+        "Failed to get task",
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
   }
 
   @override
-  Future<List<Task>> getTaskList() {
-    // TODO: implement getTaskList
-    throw UnimplementedError();
+  Future<List<Task>> getTaskList() async {
+    logger.d("Repo: getTaskList");
+    try {
+      List<TaskDto> taskList = await _remoteSource.getTaskList();
+      await _db.saveTaskList(taskList);
+      List<TaskDto> cachedTasks = await _db.getCachedTaskList();
+      return cachedTasks.map((t) => t.toTask()).toList();
+    } catch (error, stackTrace) {
+      logger.e(
+        "Failed to receive task list",
+        error: error,
+        stackTrace: stackTrace,
+      );
+      throw Exception("Error receiving task list");
+    }
   }
 
   @override
-  Future<void> updateTask(Task updatedTask) {
-    // TODO: implement updateTask
-    throw UnimplementedError();
+  Future<void> updateTask(Task updatedTask) async {
+    logger.d("Repo: updateTask");
+    try {
+      TaskDto taskDto = await _remoteSource.updateTask(updatedTask.toTaskDto());
+      await _db.updateCachedTask(taskDto);
+    } catch (error, stackTrace) {
+      logger.e(
+        "Failed to update task list",
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
   }
 
   @override
-  Future<void> updateTaskList(List<Task> list) {
-    // TODO: implement updateTaskList
-    throw UnimplementedError();
+  Future<void> updateTaskList(List<Task> list) async {
+    logger.d("Repo: updateTaskList");
+    try {
+      List<TaskDto> taskDtos = await _remoteSource.updateTaskList(
+        list.map((t) => t.toTaskDto()).toList()
+      );
+      await _db.saveTaskList(taskDtos);
+    } catch (error, stackTrace) {
+      logger.e(
+        "Failed to update task list",
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
   }
 
 }

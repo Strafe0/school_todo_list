@@ -24,12 +24,27 @@ class TaskDto {
   final int? deadline;
   final bool done;
   final String? color;
+  @JsonKey(name: "created_at")
   final int createdAt;
+  @JsonKey(name: "changed_at")
   final int changedAt;
+  @JsonKey(name: "last_updated_by")
   final String lastUpdatedBy;
 
   factory TaskDto.fromJson(Map<String, dynamic> json) => _$TaskDtoFromJson(json);
   Map<String, dynamic> toJson() => _$TaskDtoToJson(this);
+
+  factory TaskDto.fromDbJson(Map<String, dynamic> dbJson) {
+    Map<String, dynamic> json = Map.of(dbJson);
+
+    if (json["done"] == 1) {
+      json["done"] = true;
+    } else {
+      json["done"] = false;
+    }
+
+    return TaskDto.fromJson(json);
+  }
 }
 
 extension TaskDtoMapper on TaskDto {
@@ -49,5 +64,11 @@ extension TaskDtoMapper on TaskDto {
             )
           : null,
     );
+  }
+
+  Map<String, dynamic> toDbJson() {
+    Map<String, dynamic> json = toJson();
+    json["done"] = done ? 1 : 0;
+    return json;
   }
 }
