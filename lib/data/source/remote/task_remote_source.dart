@@ -29,6 +29,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
           "element": task.toJson(),
         }
       );
+      revisionHolder.revision = response.revision;
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -44,6 +45,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   Future<TaskDto> deleteTaskById(String id) async {
     try {
       ElementResponse response = await _taskService.deleteTask(id);
+      revisionHolder.revision = response.revision;
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -99,6 +101,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
           "element": task.toJson(),
         },
       );
+      revisionHolder.revision = response.revision;
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -118,6 +121,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
           "list": jsonEncode(list)
         }
       );
+      revisionHolder.revision = response.revision;
       List<TaskDto> taskDtos = response.list.map(
         (m) => TaskDto.fromJson(m),
       ).toList();

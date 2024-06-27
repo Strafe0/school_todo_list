@@ -342,7 +342,11 @@ class DeleteTaskButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool enabled = deleteTask != null;
+    final taskEditNotifier = Provider.of<TaskEditNotifier>(
+      context,
+      listen: false,
+    );
+    bool enabled = taskEditNotifier.editMode;
 
     return ListTile(
       enabled: enabled,
@@ -361,6 +365,59 @@ class DeleteTaskButton extends StatelessWidget {
             ? Theme.of(context).colorScheme.error
             : Theme.of(context).colorScheme.tertiary,
       ),
+      onTap: () => _onDeletePressed(context, taskEditNotifier),
     );
+  }
+
+  Future<void> _onDeletePressed(
+    BuildContext context,
+    TaskEditNotifier taskEditNotifier,
+  ) async {
+    bool continueDeleting = await _showDeleteDialog(context);
+
+    if (continueDeleting && context.mounted) {
+      final taskListNotifier = Provider.of<TaskListNotifier>(
+        context,
+        listen: false,
+      );
+      bool isSuccess = await taskListNotifier.deleteTask(
+        taskEditNotifier.task.id,
+      );
+
+      if (context.mounted) {
+        if (!isSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Ошибка удаления задачи")),
+          );
+        } else {
+          Navigator.of(context).pop();
+        }
+      }
+    }
+  }
+
+  Future<bool> _showDeleteDialog(BuildContext context) async {
+    bool? userAnswer = await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Удалить задачу?"),
+          content: const Text(
+            "После удаления задачу нельзя будет восстановить.",
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text("Отмена"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text("Удалить"),
+            ),
+          ],
+        );
+      },
+    );
+    return userAnswer ?? false;
   }
 }

@@ -74,13 +74,13 @@ class _TaskListTileState extends State<TaskListTile> {
 
   void _deleteTask() async {
     logger.i(
-      "Deleting task ${widget.task.id}: "
+      "Deleting task (swipe) ${widget.task.id}: "
       "${widget.task.title}",
     );
 
-    final taskUseCase = Provider.of<TaskListNotifier>(context, listen: false);
-    bool result = await taskUseCase.deleteTask(widget.task.id);
-    if (!result && context.mounted) {
+    final taskListNotifier = Provider.of<TaskListNotifier>(context, listen: false);
+    bool isSuccess = await taskListNotifier.deleteTask(widget.task.id);
+    if (!isSuccess && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Ошибка удаления задачи")),
       );
