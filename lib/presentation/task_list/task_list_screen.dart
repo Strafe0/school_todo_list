@@ -36,7 +36,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
           builder: (context, notifier, child) {
             Widget taskListWidget;
             if (notifier.isLoading) {
-              taskListWidget = const SliverToBoxAdapter(
+              taskListWidget = const SliverFillRemaining(
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
@@ -90,8 +90,6 @@ class TaskList extends StatefulWidget {
 }
 
 class _TaskListState extends State<TaskList> {
-  final _focusNode = FocusNode();
-
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
