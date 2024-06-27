@@ -9,7 +9,7 @@ import 'package:school_todo_list/data/task_repository_impl.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
 import 'package:school_todo_list/domain/usecase/task_usecase.dart';
 import 'package:school_todo_list/logger.dart';
-import 'package:school_todo_list/presentation/task_list/task_list_notifier.dart';
+import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/themes.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_screen.dart';
 import 'package:provider/provider.dart';

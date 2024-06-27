@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:school_todo_list/presentation/task_list/task_list_notifier.dart';
+import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 
 class MySliverAppBar extends SliverPersistentHeaderDelegate {
   MySliverAppBar({

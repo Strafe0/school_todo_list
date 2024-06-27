@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
-import 'package:school_todo_list/presentation/task_list/task_list_notifier.dart';
+import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
+import 'package:school_todo_list/presentation/task_list/fast_creation_text_field.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_screen_app_bar.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_tile.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
@@ -107,18 +108,9 @@ class _TaskListState extends State<TaskList> {
           delegate: SliverChildBuilderDelegate(
             (BuildContext context, int index) {
               if (index == widget.tasks.length) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 52.0, bottom: 8),
-                  child: TextField(
-                    focusNode: _focusNode,
-                    decoration: const InputDecoration(
-                      labelText: "Новое",
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      border: InputBorder.none,
-                    ),
-                    textAlignVertical: TextAlignVertical.center,
-                    onTapOutside: (event) => _focusNode.unfocus(),
-                  ),
+                return const Padding(
+                  padding: EdgeInsets.only(left: 52.0, bottom: 8),
+                  child: FastCreationTextField(),
                 );
               }
 
