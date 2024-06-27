@@ -31,12 +31,14 @@ class _TaskListTileState extends State<TaskListTile> {
         direction: DismissDirection.horizontal,
         background: DismissibleBackground(
           color: Theme.of(context).colorScheme.secondary,
+          alignment: Alignment.centerLeft,
           padding: const EdgeInsets.only(left: 24.0),
           icon: Icons.check,
           iconColor: Theme.of(context).colorScheme.onSecondary,
         ),
         secondaryBackground: DismissibleBackground(
           color: Theme.of(context).colorScheme.error,
+          alignment: Alignment.centerRight,
           padding: const EdgeInsets.only(right: 24),
           icon: Icons.check,
           iconColor: Theme.of(context).colorScheme.onError,
