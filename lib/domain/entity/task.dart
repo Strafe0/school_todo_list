@@ -39,7 +39,7 @@ extension Mapper on Task {
       importance: switch (importance) {
         Importance.none => "basic",
         Importance.low => "low",
-        Importance.high => "high",
+        Importance.high => "important",
       },
       deadline: hasDeadline
           ? Duration(milliseconds: deadline!.millisecondsSinceEpoch).inSeconds

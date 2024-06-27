@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/logger.dart';
+import 'package:school_todo_list/presentation/task_edit/task_edit_change_notifier.dart';
+import 'package:school_todo_list/presentation/task_list/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
@@ -35,22 +38,32 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        appBar: const TaskEditScreenAppBar(),
-        body: Padding(
-          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                TaskTextField(task: task),
-                TaskImportanceField(task: task),
-                const Divider(),
-                TaskDeadlineField(task: task),
-                const Divider(),
-                DeleteTaskButton(
-                  deleteTask: widget.taskForEdit != null ? () {} : null,
-                ),
-              ],
+      child: ChangeNotifierProvider(
+        create: (_) => TaskEditNotifier(
+          task: task,
+          editMode: widget.taskForEdit != null,
+        ),
+        child: Scaffold(
+          appBar: const TaskEditScreenAppBar(),
+          body: Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const TaskTextField(),
+                  const TaskImportanceField(),
+                  const Divider(),
+                  const TaskDeadlineField(),
+                  const Divider(),
+                  DeleteTaskButton(
+                    deleteTask: widget.taskForEdit != null ? () {} : null,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -62,6 +75,9 @@ class _TaskEditScreenState extends State<TaskEditScreen> {
 class TaskEditScreenAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   const TaskEditScreenAppBar({super.key});
+
+  @override
+  Size get preferredSize => const Size.fromHeight(56);
 
   @override
   Widget build(BuildContext context) {
@@ -79,9 +95,7 @@ class TaskEditScreenAppBar extends StatelessWidget
       ),
       actions: [
         TextButton(
-          onPressed: () {
-            logger.d("Save pressed");
-          },
+          onPressed: () => _onSavePressed(context),
           child: Text("Сохранить".toUpperCase()),
         ),
       ],
@@ -97,14 +111,41 @@ class TaskEditScreenAppBar extends StatelessWidget
     );
   }
 
-  @override
-  Size get preferredSize => const Size.fromHeight(56);
+  Future<void> _onSavePressed(BuildContext context) async {
+    logger.d("Save pressed");
+    final taskListNotifier = Provider.of<TaskListNotifier>(
+      context,
+      listen: false,
+    );
+
+    final notifier = Provider.of<TaskEditNotifier>(
+      context,
+      listen: false,
+    );
+
+    bool isSuccess;
+    if (notifier.editMode) {
+      isSuccess = await taskListNotifier.updateTask(notifier.task);
+    } else {
+      isSuccess = await taskListNotifier.createTask(notifier.task);
+    }
+
+    if (context.mounted) {
+      if (isSuccess) {
+        Navigator.of(context).pop();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Ошибка сохранения задачи"),
+          ),
+        );
+      }
+    }
+  }
 }
 
 class TaskTextField extends StatefulWidget {
-  const TaskTextField({super.key, required this.task});
-
-  final Task task;
+  const TaskTextField({super.key});
 
   @override
   State<TaskTextField> createState() => _TaskTextFieldState();
@@ -112,16 +153,19 @@ class TaskTextField extends StatefulWidget {
 
 class _TaskTextFieldState extends State<TaskTextField> {
   final _focusNode = FocusNode();
-  late final TextEditingController _textController;
+  late final TextEditingController _textController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _textController = TextEditingController(text: widget.task.title);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _textController.text =
+        Provider.of<TaskEditNotifier>(context).taskTitle;
   }
 
   @override
   Widget build(BuildContext context) {
+    final notifier = Provider.of<TaskEditNotifier>(context);
+
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
       child: DecoratedBox(
@@ -148,30 +192,28 @@ class _TaskTextFieldState extends State<TaskTextField> {
               borderRadius: BorderRadius.circular(8),
             ),
           ),
+          onChanged: (String text) {
+            notifier.taskTitle = text;
+          },
         ),
       ),
     );
   }
 }
 
-class TaskImportanceField extends StatefulWidget {
-  const TaskImportanceField({super.key, required this.task});
+class TaskImportanceField extends StatelessWidget {
+  const TaskImportanceField({super.key});
 
-  final Task task;
-
-  @override
-  State<TaskImportanceField> createState() => _TaskImportanceFieldState();
-}
-
-class _TaskImportanceFieldState extends State<TaskImportanceField> {
-  Color? getImportanceColor(BuildContext context) =>
-      switch (widget.task.importance) {
+  Color? getImportanceColor(BuildContext context, Importance importance) =>
+      switch (importance) {
         Importance.high => Theme.of(context).colorScheme.error,
         _ => null,
       };
 
   @override
   Widget build(BuildContext context) {
+    final notifier = Provider.of<TaskEditNotifier>(context);
+
     return MenuAnchor(
       menuChildren: [
         MenuItemButton(
@@ -181,9 +223,7 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
           ),
           onPressed: () {
             logger.d("Selected Importance.none");
-            setState(() {
-              widget.task.importance = Importance.none;
-            });
+              notifier.importance = Importance.none;
           },
         ),
         MenuItemButton(
@@ -194,9 +234,7 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
           ),
           onPressed: () {
             logger.d("Selected Importance.low");
-            setState(() {
-              widget.task.importance = Importance.low;
-            });
+              notifier.importance = Importance.low;
           },
         ),
         MenuItemButton(
@@ -209,9 +247,7 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
           ),
           onPressed: () {
             logger.d("Selected Importance.high");
-            setState(() {
-              widget.task.importance = Importance.high;
-            });
+              notifier.importance = Importance.high;
           },
         ),
       ],
@@ -219,10 +255,15 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
         return ListTile(
           title: const Text("Важность"),
           subtitle: Text.rich(
-            style: TextStyle(color: getImportanceColor(context)),
+            style: TextStyle(
+              color: getImportanceColor(
+                context,
+                notifier.taskImportance,
+              ),
+            ),
             createTextSpanWithImportance(
-              importance: widget.task.importance,
-              text: widget.task.importance.name,
+              importance: notifier.taskImportance,
+              text: notifier.taskImportance.name,
             ),
           ),
           onTap: () {
@@ -239,31 +280,23 @@ class _TaskImportanceFieldState extends State<TaskImportanceField> {
 }
 
 class TaskDeadlineField extends StatefulWidget {
-  const TaskDeadlineField({super.key, required this.task});
-
-  final Task task;
+  const TaskDeadlineField({super.key});
 
   @override
   State<TaskDeadlineField> createState() => _TaskDeadlineFieldState();
 }
 
 class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
-  bool hasDeadline = false;
   DateTime? pickedDateTime;
 
   @override
-  void initState() {
-    super.initState();
-    hasDeadline = widget.task.hasDeadline;
-    pickedDateTime = widget.task.deadline;
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final Task task = Provider.of<TaskEditNotifier>(context).task;
+
     return SwitchListTile(
       title: const Text("Сделать до"),
-      subtitle: getSubtitle(pickedDateTime),
-      value: hasDeadline,
+      subtitle: getSubtitleWithDate(task.deadline),
+      value: task.hasDeadline,
       onChanged: _onSwitchChanged,
       contentPadding: const EdgeInsets.only(left: 16, right: 0),
     );
@@ -280,14 +313,16 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
     } else {
       pickedDateTime = null;
     }
-
-    setState(() {
-      hasDeadline = pickedDateTime != null;
+    
+    if (context.mounted) {
+      Provider.of<TaskEditNotifier>(context, listen: false).deadline = pickedDateTime;
       logger.d("Selected deadline: $pickedDateTime");
-    });
+    } else {
+      logger.e("TaskDeadlineField: context not mounted");
+    }
   }
 
-  Text? getSubtitle(DateTime? date) {
+  Text? getSubtitleWithDate(DateTime? date) {
     if (date != null) {
       return Text(
         convertDateTimeToString(date),
@@ -315,12 +350,16 @@ class DeleteTaskButton extends StatelessWidget {
       title: Text(
         "Удалить",
         style: TextStyle(
-          color: enabled ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.tertiary,
+          color: enabled
+              ? Theme.of(context).colorScheme.error
+              : Theme.of(context).colorScheme.tertiary,
         ),
       ),
       leading: Icon(
         Icons.delete,
-        color: enabled ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.tertiary,
+        color: enabled
+            ? Theme.of(context).colorScheme.error
+            : Theme.of(context).colorScheme.tertiary,
       ),
     );
   }

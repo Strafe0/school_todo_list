@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
-import 'package:school_todo_list/domain/usecase/task_usecase.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
+import 'package:school_todo_list/presentation/task_list/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_screen_app_bar.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_tile.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
@@ -17,14 +17,6 @@ class TodoListScreen extends StatefulWidget {
 }
 
 class _TodoListScreenState extends State<TodoListScreen> {
-  List<Task> tasks = [];
-  final ValueNotifier<bool> completedTasksVisibility = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -39,36 +31,21 @@ class _TodoListScreenState extends State<TodoListScreen> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: FutureBuilder(
-          future: Provider.of<TaskUseCase>(context).getAllTasks(),
-          builder: (context, snapshot) {
+        body: Consumer<TaskListNotifier>(
+          builder: (context, notifier, child) {
             Widget taskListWidget;
-            if (!snapshot.hasData) {
+            if (notifier.isLoading) {
               taskListWidget = const SliverToBoxAdapter(
-                child: const Center(
+                child: Center(
                   child: CircularProgressIndicator(),
                 ),
               );
             } else {
-              tasks = snapshot.data!;
-              taskListWidget = ValueListenableBuilder(
-                valueListenable: completedTasksVisibility,
-                builder: (context, showCompletedTasks, child) {
-                  List<Task> taskForShowing = [];
-                  if (!showCompletedTasks) {
-                    taskForShowing = tasks;
-                  } else {
-                    taskForShowing = tasks.where((t) => !t.done).toList();
-                  }
-
-                  return TaskList(
-                    tasks: taskForShowing,
-                    updateList: () => setState(() {}),
-                  );
-                },
+              taskListWidget = TaskList(
+                tasks: notifier.filteredTasks,
               );
             }
-
+        
             return CustomScrollView(
               slivers: [
                 SliverPersistentHeader(
@@ -76,7 +53,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
                   delegate: MySliverAppBar(
                     expandedHeight: 148,
                     collapsedHeight: 88,
-                    completedTasksVisibility: completedTasksVisibility,
                   ),
                 ),
                 taskListWidget,
@@ -104,11 +80,9 @@ class TaskList extends StatefulWidget {
   const TaskList({
     super.key,
     required this.tasks,
-    required this.updateList,
   });
 
   final List<Task> tasks;
-  final void Function() updateList;
 
   @override
   State<TaskList> createState() => _TaskListState();
@@ -150,18 +124,6 @@ class _TaskListState extends State<TaskList> {
 
               return TaskListTile(
                 task: widget.tasks[index],
-                updateList: widget.updateList,
-                remove: (id) {
-                  logger.i(
-                    "Deleting task ${widget.tasks[index].id}: "
-                    "${widget.tasks[index].title}",
-                  );
-                  setState(() {
-                    widget.tasks.removeWhere(
-                      (t) => t.id == id,
-                    );
-                  });
-                },
               );
             },
             childCount: widget.tasks.length + 1,

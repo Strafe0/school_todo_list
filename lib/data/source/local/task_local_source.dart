@@ -13,24 +13,21 @@ abstract class TaskDatabase {
 class TaskDatabaseImpl implements TaskDatabase {
   TaskDatabaseImpl(this._db);
 
-  AppDatabase _db;
+  final AppDatabase _db;
 
   @override
-  Future<TaskDto> addCachedTask(TaskDto task) {
-    // TODO: implement addCachedTask
-    throw UnimplementedError();
+  Future<void> addCachedTask(TaskDto task) async {
+    await _db.insertTask(task);
   }
 
   @override
-  Future<TaskDto> deleteCachedTaskById(String id) {
-    // TODO: implement deleteCachedTaskById
-    throw UnimplementedError();
+  Future<void> deleteCachedTaskById(String id) async {
+    await _db.deleteTask(id);
   }
 
   @override
-  Future<TaskDto> getCachedTaskById(String id) {
-    // TODO: implement getCachedTaskById
-    throw UnimplementedError();
+  Future<TaskDto> getCachedTaskById(String id) async {
+    return await _db.getTask(id);
   }
 
   @override

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:school_todo_list/presentation/task_list/task_list_notifier.dart';
 
 class MySliverAppBar extends SliverPersistentHeaderDelegate {
   MySliverAppBar({
     required this.expandedHeight,
     required this.collapsedHeight,
-    required this.completedTasksVisibility,
   });
 
   final double expandedHeight;
   final double collapsedHeight;
-  final ValueNotifier<bool> completedTasksVisibility;
 
   @override
   Widget build(
@@ -51,12 +51,10 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
             ),
           ),
         ),
-        Positioned(
+        const Positioned(
           right: 12,
           bottom: 0,
-          child: VisibilityButton(
-            completedTasksVisibility: completedTasksVisibility,
-          ),
+          child: VisibilityButton(),
         ),
       ],
     );
@@ -74,27 +72,19 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
   }
 }
 
-class VisibilityButton extends StatefulWidget {
-  const VisibilityButton({super.key, required this.completedTasksVisibility});
+class VisibilityButton extends StatelessWidget {
+  const VisibilityButton({super.key});
 
-  final ValueNotifier<bool> completedTasksVisibility;
-
-  @override
-  State<VisibilityButton> createState() => _VisibilityButtonState();
-}
-
-class _VisibilityButtonState extends State<VisibilityButton> {
   @override
   Widget build(BuildContext context) {
+    TaskListNotifier notifier = Provider.of<TaskListNotifier>(context);
+
     return IconButton(
       onPressed: () {
-        setState(() {
-          widget.completedTasksVisibility.value =
-              !widget.completedTasksVisibility.value;
-        });
+        notifier.showCompleted = !notifier.showCompleted;
       },
       icon: Icon(
-        widget.completedTasksVisibility.value
+        notifier.showCompleted
             ? Icons.visibility_off
             : Icons.visibility,
         color: Theme.of(context).colorScheme.primary,

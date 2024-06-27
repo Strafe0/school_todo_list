@@ -9,6 +9,7 @@ import 'package:school_todo_list/data/task_repository_impl.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
 import 'package:school_todo_list/domain/usecase/task_usecase.dart';
 import 'package:school_todo_list/logger.dart';
+import 'package:school_todo_list/presentation/task_list/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/themes.dart';
 import 'package:school_todo_list/presentation/task_list/task_list_screen.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +34,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (_) => TaskUseCase(repository: repository),
+    return ChangeNotifierProvider(
+      create: (_) => TaskListNotifier(
+        TaskUseCase(repository: repository),
+      )..loadTasks(),
       child: MaterialApp(
         title: 'Flutter Todo App',
         localizationsDelegates: const [
@@ -59,7 +62,10 @@ Future<TaskRepository> initRepo() async {
   await db.init();
 
   var repo = TaskRepositoryImpl(
-    remoteSource: TaskRemoteSourceImpl(Api.instance.taskService),
+    remoteSource: TaskRemoteSourceImpl(
+      Api.instance.taskService,
+      Api.instance.revisionHolder,
+    ),
     database: TaskDatabaseImpl(db),
   );
 

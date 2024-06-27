@@ -5,18 +5,22 @@ class TaskUseCase {
   TaskUseCase({required TaskRepository repository}) : _repository = repository;
 
   final TaskRepository _repository;
+  
+  List<Task> _tasks = [];
+  List<Task> get tasks => _tasks;
 
   Future<List<Task>> getAllTasks() async {
     final List<Task> taskList = await _repository.getTaskList();
+    _tasks = taskList;
     return taskList;
   }
 
-  Future<void> createTask(Task task) async {
-    await _repository.addTask(task);
+  Future<bool> createTask(Task task) async {
+    return await _repository.addTask(task);
   }
 
-  Future<void> deleteTask(String id) async {
-    await _repository.deleteTask(id);
+  Future<bool> deleteTask(String id) async {
+    return await _repository.deleteTask(id);
   }
 
   Future<Task> getTask(String id) async {
@@ -24,11 +28,11 @@ class TaskUseCase {
     return task;
   }
 
-  Future<void> updateTask(Task task) async {
-    await _repository.updateTask(task);
+  Future<bool> updateTask(Task task) async {
+    return await _repository.updateTask(task);
   }
 
-  Future<void> updateTaskList(List<Task> taskList) async {
-    await _repository.updateTaskList(taskList);
+  Future<bool> updateTaskList(List<Task> taskList) async {
+    return await _repository.updateTaskList(taskList);
   }
 }

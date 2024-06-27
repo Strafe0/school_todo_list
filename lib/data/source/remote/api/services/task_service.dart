@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:school_todo_list/data/dto/task_dto.dart';
-import 'package:school_todo_list/data/source/remote/api/response/response.dart';
+import 'package:school_todo_list/data/source/remote/api/responses/response.dart';
 
 part 'task_service.g.dart';
 
@@ -13,16 +12,19 @@ abstract class TaskService {
   Future<ListResponse> getAll();
 
   @PATCH('/list')
-  Future<ListResponse> updateAll(@Body() List<TaskDto> list);
+  Future<ListResponse> updateAll(@Body() Map<String, dynamic> body);
 
   @GET('/list/{id}')
-  Future<ElementResponse> getById(@Path('id') @Body() String id);
+  Future<ElementResponse> getById(@Path('id') String id);
 
   @POST('/list')
-  Future<ElementResponse> createTask(@Body() TaskDto task);
+  Future<ElementResponse> createTask(@Body() Map<String, dynamic> body);
 
   @PUT('/list/{id}')
-  Future<ElementResponse> updateTask(@Path('id') String id, TaskDto task);
+  Future<ElementResponse> updateTask(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
 
   @DELETE('/list/{id}')
   Future<ElementResponse> deleteTask(@Path('id') String id);

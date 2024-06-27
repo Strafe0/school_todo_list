@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:school_todo_list/data/source/remote/api/revision_holder.dart';
 import 'package:school_todo_list/data/source/remote/api/services/task_service.dart';
 import 'package:school_todo_list/data/source/remote/api/token_provider.dart';
 
@@ -15,12 +16,19 @@ class Api {
       ),
     );
 
-    _dio!.interceptors.add(
+    _dio!.interceptors..add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
           String token = getAccessToken();
           options.headers["Authorization"] = "Bearer $token";
           return handler.next(options);
+        },
+      ),
+    )..add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          revisionHolder.revision;
+          options.headers["X-Last-Known-Revision"] = revisionHolder.revision;
         },
       ),
     );
@@ -40,4 +48,5 @@ class Api {
 
   Dio? _dio;
   late TaskService taskService;
+  final RevisionHolder revisionHolder = RevisionHolder();
 }

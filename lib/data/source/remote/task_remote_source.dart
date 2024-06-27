@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:school_todo_list/data/dto/task_dto.dart';
-import 'package:school_todo_list/data/source/remote/api/response/response.dart';
+import 'package:school_todo_list/data/source/remote/api/responses/response.dart';
+import 'package:school_todo_list/data/source/remote/api/revision_holder.dart';
 import 'package:school_todo_list/data/source/remote/api/services/task_service.dart';
 import 'package:school_todo_list/logger.dart';
 
@@ -13,14 +16,19 @@ abstract class TaskRemoteSource {
 }
 
 class TaskRemoteSourceImpl implements TaskRemoteSource {
-  TaskRemoteSourceImpl(this._taskService);
+  TaskRemoteSourceImpl(this._taskService, this.revisionHolder);
 
   final TaskService _taskService;
+  final RevisionHolder revisionHolder;
 
   @override
   Future<TaskDto> addTask(TaskDto task) async {
     try {
-      ElementResponse response = await _taskService.createTask(task);
+      ElementResponse response = await _taskService.createTask(
+        {
+          "element": task.toJson(),
+        }
+      );
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -51,6 +59,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   Future<TaskDto> getTaskById(String id) async {
     try {
       ElementResponse response = await _taskService.getById(id);
+      revisionHolder.revision = response.revision;
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -66,6 +75,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   Future<List<TaskDto>> getTaskList() async {
     try {
       ListResponse response = await _taskService.getAll();
+      revisionHolder.revision = response.revision;
       List<TaskDto> taskDtos = response.list.map(
         (m) => TaskDto.fromJson(m),
       ).toList();
@@ -83,7 +93,12 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   @override
   Future<TaskDto> updateTask(TaskDto task) async {
     try {
-      ElementResponse response = await _taskService.updateTask(task.id, task);
+      ElementResponse response = await _taskService.updateTask(
+        task.id,
+        {
+          "element": task.toJson(),
+        },
+      );
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -98,7 +113,11 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   @override
   Future<List<TaskDto>> updateTaskList(List<TaskDto> list) async {
     try {
-      ListResponse response = await _taskService.updateAll(list);
+      ListResponse response = await _taskService.updateAll(
+        {
+          "list": jsonEncode(list)
+        }
+      );
       List<TaskDto> taskDtos = response.list.map(
         (m) => TaskDto.fromJson(m),
       ).toList();

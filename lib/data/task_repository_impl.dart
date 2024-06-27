@@ -16,29 +16,32 @@ class TaskRepositoryImpl implements TaskRepository {
   final TaskDatabase _db;
 
   @override
-  Future<void> addTask(Task task) async {
+  Future<bool> addTask(Task task) async {
     logger.d("Repo: addTask");
     try {
       TaskDto taskDto = await _remoteSource.addTask(task.toTaskDto());
       await _db.addCachedTask(taskDto);
+      return true;
     } catch (error, stackTrace) {
       logger.e("Failed to add task", error: error, stackTrace: stackTrace);
+      return false;
     }
   }
 
   @override
-  Future<void> deleteTask(String id) async {
+  Future<bool> deleteTask(String id) async {
     logger.d("Repo: deleteTask");
     try {
       await _remoteSource.deleteTaskById(id);
       await _db.deleteCachedTaskById(id);
+      return true;
     } catch (error, stackTrace) {
       logger.e(
         "Failed to delete task",
         error: error,
         stackTrace: stackTrace,
       );
-      rethrow;
+      return false;
     }
   }
 
@@ -79,36 +82,38 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
-  Future<void> updateTask(Task updatedTask) async {
+  Future<bool> updateTask(Task updatedTask) async {
     logger.d("Repo: updateTask");
     try {
       TaskDto taskDto = await _remoteSource.updateTask(updatedTask.toTaskDto());
       await _db.updateCachedTask(taskDto);
+      return true;
     } catch (error, stackTrace) {
       logger.e(
         "Failed to update task list",
         error: error,
         stackTrace: stackTrace,
       );
-      rethrow;
+      return false;
     }
   }
 
   @override
-  Future<void> updateTaskList(List<Task> list) async {
+  Future<bool> updateTaskList(List<Task> list) async {
     logger.d("Repo: updateTaskList");
     try {
       List<TaskDto> taskDtos = await _remoteSource.updateTaskList(
         list.map((t) => t.toTaskDto()).toList()
       );
       await _db.saveTaskList(taskDtos);
+      return true;
     } catch (error, stackTrace) {
       logger.e(
         "Failed to update task list",
         error: error,
         stackTrace: stackTrace,
       );
-      rethrow;
+      return false;
     }
   }
 

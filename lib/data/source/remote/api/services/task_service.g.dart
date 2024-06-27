@@ -46,11 +46,12 @@ class _TaskService implements TaskService {
   }
 
   @override
-  Future<ListResponse> updateAll(List<TaskDto> list) async {
+  Future<ListResponse> updateAll(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = list.map((e) => e.toJson()).toList();
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<ListResponse>(Options(
       method: 'PATCH',
@@ -77,7 +78,7 @@ class _TaskService implements TaskService {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = id;
+    const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<ElementResponse>(Options(
       method: 'GET',
@@ -100,12 +101,12 @@ class _TaskService implements TaskService {
   }
 
   @override
-  Future<ElementResponse> createTask(TaskDto task) async {
+  Future<ElementResponse> createTask(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(task.toJson());
+    _data.addAll(body);
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<ElementResponse>(Options(
       method: 'POST',
@@ -130,12 +131,13 @@ class _TaskService implements TaskService {
   @override
   Future<ElementResponse> updateTask(
     String id,
-    TaskDto task,
+    Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<ElementResponse>(Options(
       method: 'PUT',

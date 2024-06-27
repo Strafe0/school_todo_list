@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
+import 'package:school_todo_list/presentation/task_list/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/dismissible_background.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
@@ -11,13 +13,9 @@ class TaskListTile extends StatefulWidget {
   const TaskListTile({
     super.key,
     required this.task,
-    required this.remove,
-    required this.updateList,
   });
 
   final Task task;
-  final void Function(String id) remove;
-  final void Function() updateList;
 
   @override
   State<TaskListTile> createState() => _TaskListTileState();
@@ -46,26 +44,47 @@ class _TaskListTileState extends State<TaskListTile> {
         onDismissed: (direction) {
           logger.d("Dismissible action: $direction");
         },
-        confirmDismiss: (direction) {
+        confirmDismiss: (direction) async {
           if (direction == DismissDirection.startToEnd) {
-            setState(() {
-              widget.task.toggle();
-              widget.updateList();
-            });
+            _completeTask();
           } else if (direction == DismissDirection.endToStart) {
-            setState(() {
-              widget.remove(widget.task.id);
-            });
+            _deleteTask();
           }
 
           return Future.value(false);
         },
         child: TaskTile(
           task: widget.task,
-          updateList: widget.updateList,
+          completeTask: _completeTask,
         ),
       ),
     );
+  }
+
+  void _completeTask() async {
+    widget.task.toggle();
+    bool result = await Provider.of<TaskListNotifier>(context, listen: false)
+        .updateTask(widget.task);
+    if (!result && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Ошибка изменения задачи")),
+      );
+    }
+  }
+
+  void _deleteTask() async {
+    logger.i(
+      "Deleting task ${widget.task.id}: "
+      "${widget.task.title}",
+    );
+
+    final taskUseCase = Provider.of<TaskListNotifier>(context, listen: false);
+    bool result = await taskUseCase.deleteTask(widget.task.id);
+    if (!result && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Ошибка удаления задачи")),
+      );
+    }
   }
 }
 
@@ -73,11 +92,11 @@ class TaskTile extends StatefulWidget {
   const TaskTile({
     super.key,
     required this.task,
-    required this.updateList,
+    required this.completeTask,
   });
 
   final Task task;
-  final void Function() updateList;
+  final void Function() completeTask;
 
   @override
   State<TaskTile> createState() => _TaskTileState();
@@ -91,10 +110,7 @@ class _TaskTileState extends State<TaskTile> {
         value: widget.task.done,
         onChanged: (bool? value) {
           logger.d("Toggle task ${widget.task.id}. New value: $value");
-          setState(() {
-            widget.task.toggle();
-            widget.updateList();
-          });
+          widget.completeTask();
         },
         fillColor: WidgetStatePropertyAll(
           widget.task.done
