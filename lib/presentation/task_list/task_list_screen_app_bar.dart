@@ -43,7 +43,7 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
             child: Opacity(
               opacity: (1 - shrinkOffset / 20).clamp(0, 1),
               child: Text(
-                "Выполнено - 10",
+                "Выполнено - ${completedTasksCount(context)}",
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.tertiary,
                     ),
@@ -59,6 +59,9 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
       ],
     );
   }
+
+  int completedTasksCount(BuildContext context) =>
+      Provider.of<TaskListNotifier>(context).completedTasksCount;
 
   @override
   double get maxExtent => expandedHeight;

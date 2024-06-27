@@ -12,7 +12,6 @@ class TaskListNotifier extends ChangeNotifier {
   bool _showCompleted = false;
   bool _isLoading = false;
 
-
   bool get showCompleted => _showCompleted;
   set showCompleted(bool use) {
     _showCompleted = use;
@@ -20,6 +19,16 @@ class TaskListNotifier extends ChangeNotifier {
   }
 
   bool get isLoading => _isLoading;
+
+  int get completedTasksCount {
+    int count = 0;
+    for (var task in _tasks) {
+      if (task.done) {
+        count++;
+      }
+    }
+    return count;
+  }
 
   Future<void> loadTasks() async {
     _isLoading = true;

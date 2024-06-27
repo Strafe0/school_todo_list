@@ -5,13 +5,9 @@ class TaskUseCase {
   TaskUseCase({required TaskRepository repository}) : _repository = repository;
 
   final TaskRepository _repository;
-  
-  List<Task> _tasks = [];
-  List<Task> get tasks => _tasks;
 
   Future<List<Task>> getAllTasks() async {
     final List<Task> taskList = await _repository.getTaskList();
-    _tasks = taskList;
     return taskList;
   }
 
