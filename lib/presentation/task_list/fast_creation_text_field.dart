@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 
@@ -20,8 +21,8 @@ class _FastCreationTextFieldState extends State<FastCreationTextField> {
     return TextField(
       focusNode: _focusNode,
       controller: _textController,
-      decoration: const InputDecoration(
-        labelText: "Новое",
+      decoration: InputDecoration(
+        labelText: context.loc.newTask,
         floatingLabelBehavior: FloatingLabelBehavior.never,
         border: InputBorder.none,
       ),
@@ -42,7 +43,7 @@ class _FastCreationTextFieldState extends State<FastCreationTextField> {
 
         if (!isSuccess && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Ошибка создания задачи")),
+            SnackBar(content: Text(context.loc.errorCreationTask)),
           );
         } else {
           _textController.text = '';

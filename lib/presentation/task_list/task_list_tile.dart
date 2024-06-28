@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
@@ -69,7 +70,7 @@ class _TaskListTileState extends State<TaskListTile> {
         .updateTask(widget.task);
     if (!result && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Ошибка изменения задачи")),
+        SnackBar(content: Text(context.loc.errorUpdatingTask)),
       );
     }
   }
@@ -84,7 +85,7 @@ class _TaskListTileState extends State<TaskListTile> {
     bool isSuccess = await taskListNotifier.deleteTask(widget.task.id);
     if (!isSuccess && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Ошибка удаления задачи")),
+        SnackBar(content: Text(context.loc.errorDeletingTask)),
       );
     }
   }
@@ -220,7 +221,7 @@ class TaskDeadline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      convertDateTimeToString(deadline),
+      convertDateTimeToString(deadline, Localizations.localeOf(context)),
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: Theme.of(context).dividerColor,
             decoration: isCompleted ? TextDecoration.lineThrough : null,

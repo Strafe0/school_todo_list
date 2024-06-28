@@ -1,0 +1,31 @@
+{
+    "@@locale": "en",
+    "myTasks": "My tasks",
+    "loading": "Loading",
+    "completed": "Completed - {count}",
+    "@comleted": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "5"
+            }
+        }
+    },
+    "newTask": "New",
+    "no": "No",
+    "save": "Save",
+    "buttonCancel": "Cancel",
+    "taskLabelText": "What should be done...",
+    "buttonDelete": "Delete",
+    "importance": "Importance",
+    "importanceLow": "Low",
+    "importanceHigh": "High",
+    "importanceNone": "None",
+    "errorSavingTask": "Failed to save task",
+    "titleDeadline": "Do it before",
+    "errorDeletingTask": "Failed to delete task",
+    "questionDeleteTask": "Delete task?",
+    "warningDeletionIsIrreversible": "Once deleted, the task cannot be restored.",
+    "errorCreationTask": "Failed to create task",
+    "errorUpdatingTask": "Failed to update task"
+}

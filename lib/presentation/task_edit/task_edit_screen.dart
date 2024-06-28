@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/notifiers/task_edit_change_notifier.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
@@ -96,7 +97,7 @@ class TaskEditScreenAppBar extends StatelessWidget
       actions: [
         TextButton(
           onPressed: () => _onSavePressed(context),
-          child: Text("Сохранить".toUpperCase()),
+          child: Text(context.loc.save.toUpperCase()),
         ),
       ],
       elevation: 0,
@@ -135,8 +136,8 @@ class TaskEditScreenAppBar extends StatelessWidget
         Navigator.of(context).pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Ошибка сохранения задачи"),
+          SnackBar(
+            content: Text(context.loc.errorSavingTask),
           ),
         );
       }
@@ -185,7 +186,7 @@ class _TaskTextFieldState extends State<TaskTextField> {
             fillColor: Theme.of(context).colorScheme.surfaceContainer,
             floatingLabelAlignment: FloatingLabelAlignment.start,
             alignLabelWithHint: true,
-            labelText: "Что нужно сделать...",
+            labelText: context.loc.taskLabelText,
             floatingLabelBehavior: FloatingLabelBehavior.never,
             border: OutlineInputBorder(
               borderSide: BorderSide.none,
@@ -218,7 +219,7 @@ class TaskImportanceField extends StatelessWidget {
       menuChildren: [
         MenuItemButton(
           child: Text(
-            "Нет",
+            context.loc.importanceNone,
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           onPressed: () {
@@ -230,7 +231,9 @@ class TaskImportanceField extends StatelessWidget {
           child: Text.rich(
             style: Theme.of(context).textTheme.bodyLarge,
             createTextSpanWithImportance(
-                importance: Importance.low, text: "Низкая"),
+              importance: Importance.low,
+              text: context.loc.importanceLow,
+            ),
           ),
           onPressed: () {
             logger.d("Selected Importance.low");
@@ -243,7 +246,9 @@ class TaskImportanceField extends StatelessWidget {
                   color: Theme.of(context).colorScheme.error,
                 ),
             createTextSpanWithImportance(
-                importance: Importance.high, text: "Высокая"),
+              importance: Importance.high,
+              text: context.loc.importanceHigh,
+            ),
           ),
           onPressed: () {
             logger.d("Selected Importance.high");
@@ -253,7 +258,7 @@ class TaskImportanceField extends StatelessWidget {
       ],
       builder: (context, controller, child) {
         return ListTile(
-          title: const Text("Важность"),
+          title: Text(context.loc.importance),
           subtitle: Text.rich(
             style: TextStyle(
               color: getImportanceColor(
@@ -263,7 +268,7 @@ class TaskImportanceField extends StatelessWidget {
             ),
             createTextSpanWithImportance(
               importance: notifier.taskImportance,
-              text: notifier.taskImportance.name,
+              text: notifier.taskImportance.getImportanceText(context),
             ),
           ),
           onTap: () {
@@ -294,7 +299,7 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
     final Task task = Provider.of<TaskEditNotifier>(context).task;
 
     return SwitchListTile(
-      title: const Text("Сделать до"),
+      title: Text(context.loc.titleDeadline),
       subtitle: getSubtitleWithDate(task.deadline),
       value: task.hasDeadline,
       onChanged: _onSwitchChanged,
@@ -325,7 +330,7 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
   Text? getSubtitleWithDate(DateTime? date) {
     if (date != null) {
       return Text(
-        convertDateTimeToString(date),
+        convertDateTimeToString(date, Localizations.localeOf(context)),
         style: Theme.of(context).textTheme.bodySmall?.copyWith(
               color: Theme.of(context).colorScheme.primary,
             ),
@@ -352,7 +357,7 @@ class DeleteTaskButton extends StatelessWidget {
       enabled: enabled,
       horizontalTitleGap: 16,
       title: Text(
-        "Удалить",
+        context.loc.buttonDelete,
         style: TextStyle(
           color: enabled
               ? Theme.of(context).colorScheme.error
@@ -387,7 +392,7 @@ class DeleteTaskButton extends StatelessWidget {
       if (context.mounted) {
         if (!isSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Ошибка удаления задачи")),
+            SnackBar(content: Text(context.loc.errorDeletingTask)),
           );
         } else {
           Navigator.of(context).pop();
@@ -401,18 +406,18 @@ class DeleteTaskButton extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Удалить задачу?"),
-          content: const Text(
-            "После удаления задачу нельзя будет восстановить.",
+          title: Text(context.loc.questionDeleteTask),
+          content: Text(
+            context.loc.warningDeletionIsIrreversible,
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text("Отмена"),
+              child: Text(context.loc.buttonCancel),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text("Удалить"),
+              child: Text(context.loc.buttonDelete),
             ),
           ],
         );

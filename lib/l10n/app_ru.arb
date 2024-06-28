@@ -1,0 +1,31 @@
+{
+    "@@locale": "ru",
+    "myTasks": "Мои дела",
+    "loading": "Загрузка",
+    "completed": "Выполнено - {count}",
+    "@comleted": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "5"
+            }
+        }
+    },
+    "newTask": "Новое",
+    "no": "Нет",
+    "save": "Сохранить",
+    "buttonCancel": "Отмена",
+    "taskLabelText": "Что нужно сделать...",
+    "buttonDelete": "Удалить",
+    "importance": "Важность",
+    "importanceLow": "Низкая",
+    "importanceHigh": "Высокая",
+    "importanceNone": "Нет",
+    "errorSavingTask": "Ошибка сохранения задачи",
+    "titleDeadline": "Сделать до",
+    "errorDeletingTask": "Ошибка удаления задачи",
+    "questionDeleteTask": "Удалить задачу?",
+    "warningDeletionIsIrreversible": "После удаления задачу нельзя будет восстановить.",
+    "errorCreationTask": "Ошибка создания задачи",
+    "errorUpdatingTask": "Ошибка обновления задачи"
+}

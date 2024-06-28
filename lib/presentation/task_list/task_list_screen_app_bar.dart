@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 
 class MySliverAppBar extends SliverPersistentHeaderDelegate {
@@ -27,7 +28,7 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
           bottom: (46 - shrinkOffset).clamp(16, 46),
           left: (60 - shrinkOffset).clamp(16, 60),
           child: Text(
-            "Мои дела",
+            context.loc.myTasks,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontSize: (32 - shrinkOffset / 3).clamp(20, 32),
                 ),
@@ -63,9 +64,9 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
   String completedTasksCount(BuildContext context) {
     final notifier = Provider.of<TaskListNotifier>(context);
     if (notifier.isLoading) {
-      return "Загрузка";
+      return context.loc.loading;
     } else {
-      return "Выполнено - ${notifier.completedTasksCount}";
+      return context.loc.completed(notifier.completedTasksCount);
     }
   }
 

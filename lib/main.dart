@@ -8,6 +8,7 @@ import 'package:school_todo_list/data/source/remote/task_remote_source.dart';
 import 'package:school_todo_list/data/task_repository_impl.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
 import 'package:school_todo_list/domain/usecase/task_usecase.dart';
+import 'package:school_todo_list/l10n/app_localizations.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/themes.dart';
@@ -41,12 +42,14 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Flutter Todo App',
         localizationsDelegates: const [
+          AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [
-          Locale('ru', ''),
+          Locale('ru'),
+          Locale('en'),
         ],
         theme: lightTheme,
         darkTheme: darkTheme,
