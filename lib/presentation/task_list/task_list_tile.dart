@@ -65,10 +65,12 @@ class _TaskListTileState extends State<TaskListTile> {
   }
 
   void _completeTask() async {
-    widget.task.toggle();
+    Task updatedTask = widget.task.copyWith(done: !widget.task.done);
     bool result = await Provider.of<TaskListNotifier>(context, listen: false)
-        .updateTask(widget.task);
-    if (!result && context.mounted) {
+        .updateTask(updatedTask);
+    if (result) {
+      widget.task.toggle();
+    } else if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(context.loc.errorUpdatingTask)),
       );

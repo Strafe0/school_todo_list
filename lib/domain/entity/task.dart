@@ -54,4 +54,23 @@ extension Mapper on Task {
       lastUpdatedBy: "123" //TODO: add device id
     );
   }
+
+  Task copyWith({
+    String? title,
+    bool? done,
+    Importance? importance,
+    DateTime? deadline,
+    DateTime? createdAt,
+    DateTime? changedAt,
+  }) {
+    return Task(
+      id: id,
+      title: title ?? this.title,
+      done: done ?? this.done,
+      importance: importance ?? this.importance,
+      deadline: deadline ?? this.deadline,
+      createdAt: createdAt ?? this.createdAt,
+      changedAt: changedAt ?? this.changedAt,
+    );
+  }
 }
