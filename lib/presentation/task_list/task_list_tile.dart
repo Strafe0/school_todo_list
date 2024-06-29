@@ -28,7 +28,7 @@ class _TaskListTileState extends State<TaskListTile> {
     return ClipRRect(
       clipBehavior: Clip.hardEdge,
       child: Dismissible(
-        key: ValueKey(widget.task),
+        key: ValueKey(widget.task.id),
         direction: DismissDirection.horizontal,
         background: DismissibleBackground(
           color: Theme.of(context).colorScheme.secondary,

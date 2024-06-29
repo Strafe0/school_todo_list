@@ -25,9 +25,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   Future<TaskDto> addTask(TaskDto task) async {
     try {
       ElementResponse response = await _taskService.createTask(
-        {
-          "element": task.toJson(),
-        }
+        task.toApiJson(),
       );
       revisionHolder.revision = response.revision;
       return TaskDto.fromJson(response.element);
@@ -97,9 +95,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
     try {
       ElementResponse response = await _taskService.updateTask(
         task.id,
-        {
-          "element": task.toJson(),
-        },
+        task.toApiJson(),
       );
       revisionHolder.revision = response.revision;
       return TaskDto.fromJson(response.element);
@@ -118,8 +114,8 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
     try {
       ListResponse response = await _taskService.updateAll(
         {
-          "list": jsonEncode(list)
-        }
+          "list": jsonEncode(list),
+        },
       );
       revisionHolder.revision = response.revision;
       List<TaskDto> taskDtos = response.list.map(

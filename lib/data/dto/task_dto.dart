@@ -66,6 +66,12 @@ extension TaskDtoMapper on TaskDto {
     );
   }
 
+  Map<String, dynamic> toApiJson() {
+    return {
+      "element": toJson()
+    };
+  }
+
   Map<String, dynamic> toDbJson() {
     Map<String, dynamic> json = toJson();
     json["done"] = done ? 1 : 0;
