@@ -33,23 +33,27 @@ class TaskListNotifier extends ChangeNotifier {
   }
 
   Future<void> loadTasks() async {
-    _isLoading = true;
-    notifyListeners();
-
-    try {
-      _tasks = await _taskUseCase.getAllTasks();
-      _isError = false;
-    } catch (error, stackTrace) {
-      logger.e(
-        "TaskListNotifier: error load tasks",
-        error: error,
-        stackTrace: stackTrace,
-      );
-      _tasks.clear();
-      _isError = true;
-    } finally {
-      _isLoading = false;
+    logger.d("Entered the method `loadTasks()`");
+    if (!_isLoading) {
+      logger.d("Start loading");
+      _isLoading = true;
       notifyListeners();
+
+      try {
+        _tasks = await _taskUseCase.getAllTasks();
+        _isError = false;
+      } catch (error, stackTrace) {
+        logger.e(
+          "TaskListNotifier: error load tasks",
+          error: error,
+          stackTrace: stackTrace,
+        );
+        _tasks.clear();
+        _isError = true;
+      } finally {
+        _isLoading = false;
+        notifyListeners();
+      }
     }
   }
 
@@ -64,18 +68,15 @@ class TaskListNotifier extends ChangeNotifier {
   Future<bool> createTask(Task task) async {
     bool result = await _taskUseCase.createTask(task);
     if (result) {
-      await loadTasks();
+      _tasks.add(task);
     }
-
+    
     notifyListeners();
     return result;
   }
 
   Future<bool> updateTask(Task task) async {
     bool result = await _taskUseCase.updateTask(task);
-    if (result) {
-      await loadTasks();
-    }
 
     notifyListeners();
     return result;
