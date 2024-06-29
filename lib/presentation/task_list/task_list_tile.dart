@@ -8,6 +8,7 @@ import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/dismissible_background.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
+import 'package:school_todo_list/presentation/utils/snack_bar.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
 class TaskListTile extends StatefulWidget {
@@ -41,7 +42,7 @@ class _TaskListTileState extends State<TaskListTile> {
           color: Theme.of(context).colorScheme.error,
           alignment: Alignment.centerRight,
           padding: const EdgeInsets.only(right: 24),
-          icon: Icons.check,
+          icon: Icons.delete,
           iconColor: Theme.of(context).colorScheme.onError,
         ),
         onDismissed: (direction) {
@@ -71,9 +72,7 @@ class _TaskListTileState extends State<TaskListTile> {
     if (result) {
       widget.task.toggle();
     } else if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.loc.errorUpdatingTask)),
-      );
+      showSnackBar(context, context.loc.errorUpdatingTask);
     }
   }
 
@@ -86,9 +85,7 @@ class _TaskListTileState extends State<TaskListTile> {
     final taskListNotifier = Provider.of<TaskListNotifier>(context, listen: false);
     bool isSuccess = await taskListNotifier.deleteTask(widget.task.id);
     if (!isSuccess && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(context.loc.errorDeletingTask)),
-      );
+      showSnackBar(context, context.loc.errorDeletingTask);
     }
   }
 }

@@ -9,6 +9,7 @@ import 'package:school_todo_list/presentation/notifiers/task_edit_change_notifie
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
+import 'package:school_todo_list/presentation/utils/snack_bar.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
 class TaskEditScreen extends StatefulWidget {
@@ -135,11 +136,7 @@ class TaskEditScreenAppBar extends StatelessWidget
       if (isSuccess) {
         Navigator.of(context).pop();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(context.loc.errorSavingTask),
-          ),
-        );
+        showSnackBar(context, context.loc.errorSavingTask);
       }
     }
   }
@@ -391,9 +388,7 @@ class DeleteTaskButton extends StatelessWidget {
 
       if (context.mounted) {
         if (!isSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.loc.errorDeletingTask)),
-          );
+          showSnackBar(context, context.loc.errorDeletingTask);
         } else {
           Navigator.of(context).pop();
         }

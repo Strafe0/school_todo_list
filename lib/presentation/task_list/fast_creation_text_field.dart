@@ -4,6 +4,7 @@ import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
+import 'package:school_todo_list/presentation/utils/snack_bar.dart';
 
 class FastCreationTextField extends StatefulWidget {
   const FastCreationTextField({super.key});
@@ -42,9 +43,7 @@ class _FastCreationTextFieldState extends State<FastCreationTextField> {
         );
 
         if (!isSuccess && context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(context.loc.errorCreationTask)),
-          );
+          showSnackBar(context, context.loc.errorCreationTask);
         } else {
           _textController.text = '';
         }
