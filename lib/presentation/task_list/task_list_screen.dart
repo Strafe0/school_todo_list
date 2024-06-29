@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +19,8 @@ class TaskMainScreen extends StatefulWidget {
 }
 
 class _TaskMainScreenState extends State<TaskMainScreen> {
+  final GlobalKey<RefreshIndicatorState> _refreshKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -35,24 +36,28 @@ class _TaskMainScreenState extends State<TaskMainScreen> {
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: Consumer<TaskListNotifier>(
-          builder: (context, notifier, child) {        
-            return CustomScrollView(
-              physics: const BouncingScrollPhysics(
-                parent: AlwaysScrollableScrollPhysics(),
-              ),
-              slivers: [
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: MySliverAppBar(
-                    expandedHeight: 148,
-                    collapsedHeight: 88,
+          builder: (context, notifier, child) {
+            return NestedScrollView(
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return [
+                  SliverPersistentHeader(
+                    pinned: true,
+                    delegate: MySliverAppBar(
+                      expandedHeight: 148,
+                      collapsedHeight: 88,
+                    ),
                   ),
+                ];
+              },
+              body: RefreshIndicator(
+                key: _refreshKey,
+                onRefresh: () => notifier.loadTasks(),
+                child: CustomScrollView(
+                  slivers: [
+                    MainWidget(refreshIndicatorKey: _refreshKey),
+                  ],
                 ),
-                CupertinoSliverRefreshControl(
-                  onRefresh: () => notifier.loadTasks(),
-                ),
-                const MainWidget(),
-              ],
+              ), 
             );
           },
         ),
@@ -74,18 +79,22 @@ class _TaskMainScreenState extends State<TaskMainScreen> {
 
 
 class MainWidget extends StatelessWidget {
-  const MainWidget({super.key});
+  const MainWidget({super.key, required this.refreshIndicatorKey});
+
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey;
 
   @override
   Widget build(BuildContext context) {
     final notifier = Provider.of<TaskListNotifier>(context);
 
     if (notifier.isLoading) {
-      return const SliverFillRemaining(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
+      assert(
+        refreshIndicatorKey.currentState != null,
+        "RefreshIndicatorState is null",
       );
+      refreshIndicatorKey.currentState?.show();
+
+      return const SliverFillRemaining();
     }
     
     if (notifier.isError) {
