@@ -16,22 +16,24 @@ class Api {
       ),
     );
 
-    _dio!.interceptors..add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          String token = getAccessToken();
-          options.headers["Authorization"] = "Bearer $token";
-          return handler.next(options);
-        },
-      ),
-    )..add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          options.headers["X-Last-Known-Revision"] = revisionHolder.revision;
-          return handler.next(options);
-        },
-      ),
-    );
+    _dio!.interceptors
+      ..add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            String token = getAccessToken();
+            options.headers["Authorization"] = "Bearer $token";
+            return handler.next(options);
+          },
+        ),
+      )
+      ..add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            options.headers["X-Last-Known-Revision"] = revisionHolder.revision;
+            return handler.next(options);
+          },
+        ),
+      );
 
     (_dio!.httpClientAdapter as IOHttpClientAdapter)
         .createHttpClient = () => HttpClient()

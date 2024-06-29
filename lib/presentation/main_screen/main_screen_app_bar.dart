@@ -94,9 +94,7 @@ class VisibilityButton extends StatelessWidget {
         notifier.showCompleted = !notifier.showCompleted;
       },
       icon: Icon(
-        notifier.showCompleted
-            ? Icons.visibility_off
-            : Icons.visibility,
+        notifier.showCompleted ? Icons.visibility_off : Icons.visibility,
         color: Theme.of(context).colorScheme.primary,
       ),
     );

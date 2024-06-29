@@ -12,7 +12,7 @@ import 'package:school_todo_list/l10n/app_localizations.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/themes.dart';
-import 'package:school_todo_list/presentation/task_list/task_list_screen.dart';
+import 'package:school_todo_list/presentation/main_screen/main_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         ],
         theme: lightTheme,
         darkTheme: darkTheme,
-        home: const TaskMainScreen(),
+        home: const MainScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

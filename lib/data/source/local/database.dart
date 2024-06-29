@@ -13,7 +13,6 @@ abstract class AppDatabase {
   Future<void> saveTaskList(List<TaskDto> list);
 }
 
-
 class AppDatabaseImpl implements AppDatabase {
   AppDatabaseImpl();
 
@@ -98,12 +97,12 @@ class AppDatabaseImpl implements AppDatabase {
 
     await batch.commit(noResult: true);
   }
-  
+
   @override
   Future<void> deleteTask(String id) async {
     await _db.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
-  
+
   @override
   Future<void> updateTask(TaskDto task) async {
     await _db.update(

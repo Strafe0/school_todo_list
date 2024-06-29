@@ -31,7 +31,7 @@ class Task {
   }
 }
 
-extension Mapper on Task {
+extension TaskExtension on Task {
   TaskDto toTaskDto() {
     return TaskDto(
       id: id,
@@ -51,7 +51,7 @@ extension Mapper on Task {
       changedAt: Duration(
         milliseconds: changedAt.millisecondsSinceEpoch,
       ).inSeconds,
-      lastUpdatedBy: "123" //TODO: add device id
+      lastUpdatedBy: "123", //TODO: add device id
     );
   }
 

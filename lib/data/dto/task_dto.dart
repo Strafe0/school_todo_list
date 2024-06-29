@@ -31,7 +31,8 @@ class TaskDto {
   @JsonKey(name: "last_updated_by")
   final String lastUpdatedBy;
 
-  factory TaskDto.fromJson(Map<String, dynamic> json) => _$TaskDtoFromJson(json);
+  factory TaskDto.fromJson(Map<String, dynamic> json) =>
+      _$TaskDtoFromJson(json);
   Map<String, dynamic> toJson() => _$TaskDtoToJson(this);
 
   factory TaskDto.fromDbJson(Map<String, dynamic> dbJson) {
@@ -67,9 +68,7 @@ extension TaskDtoMapper on TaskDto {
   }
 
   Map<String, dynamic> toApiJson() {
-    return {
-      "element": toJson()
-    };
+    return {"element": toJson()};
   }
 
   Map<String, dynamic> toDbJson() {

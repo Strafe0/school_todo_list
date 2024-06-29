@@ -5,7 +5,7 @@ import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
-import 'package:school_todo_list/presentation/notifiers/task_edit_change_notifier.dart';
+import 'package:school_todo_list/presentation/notifiers/task_edit_notifier.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
@@ -156,8 +156,7 @@ class _TaskTextFieldState extends State<TaskTextField> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _textController.text =
-        Provider.of<TaskEditNotifier>(context).taskTitle;
+    _textController.text = Provider.of<TaskEditNotifier>(context).taskTitle;
   }
 
   @override
@@ -221,7 +220,7 @@ class TaskImportanceField extends StatelessWidget {
           ),
           onPressed: () {
             logger.d("Selected Importance.none");
-              notifier.importance = Importance.none;
+            notifier.importance = Importance.none;
           },
         ),
         MenuItemButton(
@@ -234,7 +233,7 @@ class TaskImportanceField extends StatelessWidget {
           ),
           onPressed: () {
             logger.d("Selected Importance.low");
-              notifier.importance = Importance.low;
+            notifier.importance = Importance.low;
           },
         ),
         MenuItemButton(
@@ -249,7 +248,7 @@ class TaskImportanceField extends StatelessWidget {
           ),
           onPressed: () {
             logger.d("Selected Importance.high");
-              notifier.importance = Importance.high;
+            notifier.importance = Importance.high;
           },
         ),
       ],
@@ -315,9 +314,12 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
     } else {
       pickedDateTime = null;
     }
-    
+
     if (context.mounted) {
-      Provider.of<TaskEditNotifier>(context, listen: false).deadline = pickedDateTime;
+      Provider.of<TaskEditNotifier>(
+        context,
+        listen: false,
+      ).deadline = pickedDateTime;
       logger.d("Selected deadline: $pickedDateTime");
     } else {
       logger.e("TaskDeadlineField: context not mounted");

@@ -58,19 +58,19 @@ class TaskListNotifier extends ChangeNotifier {
   }
 
   List<Task> get filteredTasks => _tasks.where((task) {
-    if (_showCompleted) {
-      return true;
-    } else {
-      return !task.done;
-    }
-  }).toList();
+        if (_showCompleted) {
+          return true;
+        } else {
+          return !task.done;
+        }
+      }).toList();
 
   Future<bool> createTask(Task task) async {
     bool result = await _taskUseCase.createTask(task);
     if (result) {
       _tasks.add(task);
     }
-    
+
     notifyListeners();
     return result;
   }

@@ -11,8 +11,8 @@ import 'package:school_todo_list/presentation/utils/date_format.dart';
 import 'package:school_todo_list/presentation/utils/snack_bar.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
-class TaskListTile extends StatefulWidget {
-  const TaskListTile({
+class TaskItem extends StatelessWidget {
+  const TaskItem({
     super.key,
     required this.task,
   });
@@ -20,16 +20,11 @@ class TaskListTile extends StatefulWidget {
   final Task task;
 
   @override
-  State<TaskListTile> createState() => _TaskListTileState();
-}
-
-class _TaskListTileState extends State<TaskListTile> {
-  @override
   Widget build(BuildContext context) {
     return ClipRRect(
       clipBehavior: Clip.hardEdge,
       child: Dismissible(
-        key: ValueKey(widget.task.id),
+        key: ValueKey(task.id),
         direction: DismissDirection.horizontal,
         background: DismissibleBackground(
           color: Theme.of(context).colorScheme.secondary,
@@ -50,96 +45,91 @@ class _TaskListTileState extends State<TaskListTile> {
         },
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.startToEnd) {
-            _completeTask();
+            _completeTask(context);
           } else if (direction == DismissDirection.endToStart) {
-            _deleteTask();
+            _deleteTask(context);
           }
 
           return Future.value(false);
         },
-        child: TaskTile(
-          task: widget.task,
+        child: _TaskListTile(
+          task: task,
           completeTask: _completeTask,
         ),
       ),
     );
   }
 
-  void _completeTask() async {
-    Task updatedTask = widget.task.copyWith(done: !widget.task.done);
-    bool result = await Provider.of<TaskListNotifier>(context, listen: false)
-        .updateTask(updatedTask);
+  void _completeTask(BuildContext context) async {
+    Task updatedTask = task.copyWith(done: !task.done);
+    bool result = await Provider.of<TaskListNotifier>(
+      context,
+      listen: false,
+    ).updateTask(updatedTask);
+    
     if (result) {
-      widget.task.toggle();
+      task.toggle();
     } else if (context.mounted) {
       showSnackBar(context, context.loc.errorUpdatingTask);
     }
   }
 
-  void _deleteTask() async {
+  void _deleteTask(BuildContext context) async {
     logger.i(
-      "Deleting task (swipe) ${widget.task.id}: "
-      "${widget.task.title}",
+      "Deleting task (swipe) ${task.id}: "
+      "${task.title}",
     );
 
-    final taskListNotifier = Provider.of<TaskListNotifier>(context, listen: false);
-    bool isSuccess = await taskListNotifier.deleteTask(widget.task.id);
+    final taskListNotifier = Provider.of<TaskListNotifier>(
+      context,
+      listen: false,
+    );
+    bool isSuccess = await taskListNotifier.deleteTask(task.id);
     if (!isSuccess && context.mounted) {
       showSnackBar(context, context.loc.errorDeletingTask);
     }
   }
 }
 
-class TaskTile extends StatefulWidget {
-  const TaskTile({
-    super.key,
-    required this.task,
-    required this.completeTask,
-  });
+class _TaskListTile extends StatelessWidget {
+  const _TaskListTile({required this.task, required this.completeTask});
 
   final Task task;
-  final void Function() completeTask;
+  final void Function(BuildContext context) completeTask;
 
-  @override
-  State<TaskTile> createState() => _TaskTileState();
-}
-
-class _TaskTileState extends State<TaskTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Checkbox(
-        value: widget.task.done,
+        value: task.done,
         onChanged: (bool? value) {
-          logger.d("Toggle task ${widget.task.id}. New value: $value");
-          widget.completeTask();
+          logger.d("Toggle task ${task.id}. New value: $value");
+          completeTask(context);
         },
         fillColor: WidgetStatePropertyAll(
-          widget.task.done
-              ? Theme.of(context).colorScheme.secondary
-              : null,
+          task.done ? Theme.of(context).colorScheme.secondary : null,
         ),
         checkColor: Theme.of(context).colorScheme.surfaceContainer,
-        shape: checkboxShape(widget.task),
+        shape: checkboxShape(task),
         side: BorderSide(
-          color: widget.task.importance == Importance.high
+          color: task.importance == Importance.high
               ? Theme.of(context).colorScheme.error
               : Theme.of(context).dividerColor,
           width: 2,
         ),
       ),
-      title: TaskTitle(task: widget.task),
-      subtitle: widget.task.hasDeadline
-          ? TaskDeadline(
-              deadline: widget.task.deadline!,
-              isCompleted: widget.task.done,
+      title: _TaskTitle(task: task),
+      subtitle: task.hasDeadline
+          ? _TaskDeadline(
+              deadline: task.deadline!,
+              isCompleted: task.done,
             )
           : null,
       contentPadding: const EdgeInsets.only(
         left: 8.0,
         right: 8.0,
       ),
-      trailing: TaskInfoButton(task: widget.task),
+      trailing: _TaskInfoButton(task: task),
     );
   }
 
@@ -150,11 +140,8 @@ class _TaskTileState extends State<TaskTile> {
   }
 }
 
-class TaskTitle extends StatelessWidget {
-  const TaskTitle({
-    super.key,
-    required this.task,
-  });
+class _TaskTitle extends StatelessWidget {
+  const _TaskTitle({required this.task});
 
   final Task task;
 
@@ -178,11 +165,8 @@ class TaskTitle extends StatelessWidget {
   }
 }
 
-class TaskInfoButton extends StatelessWidget {
-  const TaskInfoButton({
-    super.key,
-    required this.task,
-  });
+class _TaskInfoButton extends StatelessWidget {
+  const _TaskInfoButton({required this.task});
 
   final Task task;
 
@@ -207,12 +191,8 @@ class TaskInfoButton extends StatelessWidget {
   }
 }
 
-class TaskDeadline extends StatelessWidget {
-  const TaskDeadline({
-    super.key,
-    required this.deadline,
-    required this.isCompleted,
-  });
+class _TaskDeadline extends StatelessWidget {
+  const _TaskDeadline({required this.deadline, required this.isCompleted});
 
   final DateTime deadline;
   final bool isCompleted;

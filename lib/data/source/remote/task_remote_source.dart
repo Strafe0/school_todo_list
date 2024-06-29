@@ -76,9 +76,11 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
     try {
       ListResponse response = await _taskService.getAll();
       revisionHolder.revision = response.revision;
-      List<TaskDto> taskDtos = response.list.map(
-        (m) => TaskDto.fromJson(m),
-      ).toList();
+      List<TaskDto> taskDtos = response.list
+          .map(
+            (m) => TaskDto.fromJson(m),
+          )
+          .toList();
       return taskDtos;
     } catch (error, stackTrace) {
       logger.e(
@@ -118,9 +120,11 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
         },
       );
       revisionHolder.revision = response.revision;
-      List<TaskDto> taskDtos = response.list.map(
-        (m) => TaskDto.fromJson(m),
-      ).toList();
+      List<TaskDto> taskDtos = response.list
+          .map(
+            (m) => TaskDto.fromJson(m),
+          )
+          .toList();
       return taskDtos;
     } catch (error, stackTrace) {
       logger.e(

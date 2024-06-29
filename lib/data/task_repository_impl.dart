@@ -102,9 +102,8 @@ class TaskRepositoryImpl implements TaskRepository {
   Future<bool> updateTaskList(List<Task> list) async {
     logger.d("Repo: updateTaskList");
     try {
-      List<TaskDto> taskDtos = await _remoteSource.updateTaskList(
-        list.map((t) => t.toTaskDto()).toList()
-      );
+      List<TaskDto> taskDtos = await _remoteSource
+          .updateTaskList(list.map((t) => t.toTaskDto()).toList());
       await _db.saveTaskList(taskDtos);
       return true;
     } catch (error, stackTrace) {
@@ -116,5 +115,4 @@ class TaskRepositoryImpl implements TaskRepository {
       return false;
     }
   }
-
 }
