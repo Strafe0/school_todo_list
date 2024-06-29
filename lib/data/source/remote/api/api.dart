@@ -27,7 +27,6 @@ class Api {
     )..add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          revisionHolder.revision;
           options.headers["X-Last-Known-Revision"] = revisionHolder.revision;
           return handler.next(options);
         },
