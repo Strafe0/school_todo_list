@@ -97,7 +97,7 @@ class TaskEditScreenAppBar extends StatelessWidget
       actions: [
         TextButton(
           onPressed: () => _onSavePressed(context),
-          child: Text(context.loc.save.toUpperCase()),
+          child: Text(context.loc.buttonSave.toUpperCase()),
         ),
       ],
       elevation: 0,

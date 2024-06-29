@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 /// The translations for English (`en`).
@@ -11,7 +13,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loading => 'Loading';
 
   @override
-  String completed(Object count) {
+  String completed(int count) {
     return 'Completed - $count';
   }
 
@@ -22,7 +24,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get no => 'No';
 
   @override
-  String get save => 'Save';
+  String get buttonSave => 'Save';
 
   @override
   String get buttonCancel => 'Cancel';
@@ -65,4 +67,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get errorUpdatingTask => 'Failed to update task';
+
+  @override
+  String get errorLoadingTasks => 'An error occurred while loading tasks.';
+
+  @override
+  String get buttonTryAgain => 'Try again';
+
+  @override
+  String taskListIsEmpty(String showCompleted) {
+    String _temp0 = intl.Intl.selectLogic(
+      showCompleted,
+      {
+        'true': 'Task list is empty.',
+        'other': 'The list of outstanding tasks is empty.',
+      },
+    );
+    return '$_temp0';
+  }
 }

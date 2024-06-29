@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
@@ -10,14 +12,14 @@ import 'package:school_todo_list/presentation/task_list/task_list_screen_app_bar
 import 'package:school_todo_list/presentation/task_list/task_list_tile.dart';
 import 'package:school_todo_list/presentation/utils/shadow_box_decoration.dart';
 
-class TodoListScreen extends StatefulWidget {
-  const TodoListScreen({super.key});
+class TaskMainScreen extends StatefulWidget {
+  const TaskMainScreen({super.key});
 
   @override
-  State<TodoListScreen> createState() => _TodoListScreenState();
+  State<TaskMainScreen> createState() => _TaskMainScreenState();
 }
 
-class _TodoListScreenState extends State<TodoListScreen> {
+class _TaskMainScreenState extends State<TaskMainScreen> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -33,21 +35,11 @@ class _TodoListScreenState extends State<TodoListScreen> {
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         body: Consumer<TaskListNotifier>(
-          builder: (context, notifier, child) {
-            Widget taskListWidget;
-            if (notifier.isLoading) {
-              taskListWidget = const SliverFillRemaining(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            } else {
-              taskListWidget = TaskList(
-                tasks: notifier.filteredTasks,
-              );
-            }
-        
+          builder: (context, notifier, child) {        
             return CustomScrollView(
+              physics: const BouncingScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
               slivers: [
                 SliverPersistentHeader(
                   pinned: true,
@@ -56,7 +48,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     collapsedHeight: 88,
                   ),
                 ),
-                taskListWidget,
+                CupertinoSliverRefreshControl(
+                  onRefresh: () => notifier.loadTasks(),
+                ),
+                const MainWidget(),
               ],
             );
           },
@@ -76,6 +71,60 @@ class _TodoListScreenState extends State<TodoListScreen> {
     );
   }
 }
+
+
+class MainWidget extends StatelessWidget {
+  const MainWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final notifier = Provider.of<TaskListNotifier>(context);
+
+    if (notifier.isLoading) {
+      return const SliverFillRemaining(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    
+    if (notifier.isError) {
+      return SliverFillRemaining(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              context.loc.errorLoadingTasks,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+            ),
+            TextButton(
+              onPressed: () => notifier.loadTasks(),
+              child: Text(context.loc.buttonTryAgain),
+            ),
+          ],
+        ),
+      );
+    } 
+
+    if (notifier.filteredTasks.isEmpty) {
+      return SliverFillRemaining(
+        child: Center(
+          child: Text(
+            context.loc.taskListIsEmpty(notifier.showCompleted.toString()),
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+        ),
+      );
+    }
+
+    return TaskList(
+      tasks: notifier.filteredTasks,
+    );
+  }
+}
+
 
 class TaskList extends StatefulWidget {
   const TaskList({

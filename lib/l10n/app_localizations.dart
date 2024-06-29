@@ -109,7 +109,7 @@ abstract class AppLocalizations {
   ///
   /// In ru, this message translates to:
   /// **'Выполнено - {count}'**
-  String completed(Object count);
+  String completed(int count);
 
   /// No description provided for @newTask.
   ///
@@ -123,11 +123,11 @@ abstract class AppLocalizations {
   /// **'Нет'**
   String get no;
 
-  /// No description provided for @save.
+  /// No description provided for @buttonSave.
   ///
   /// In ru, this message translates to:
   /// **'Сохранить'**
-  String get save;
+  String get buttonSave;
 
   /// No description provided for @buttonCancel.
   ///
@@ -212,6 +212,24 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Ошибка обновления задачи'**
   String get errorUpdatingTask;
+
+  /// No description provided for @errorLoadingTasks.
+  ///
+  /// In ru, this message translates to:
+  /// **'Произошла ошибка при загрузке задач.'**
+  String get errorLoadingTasks;
+
+  /// No description provided for @buttonTryAgain.
+  ///
+  /// In ru, this message translates to:
+  /// **'Попробовать снова'**
+  String get buttonTryAgain;
+
+  /// Task list is empty
+  ///
+  /// In ru, this message translates to:
+  /// **'{showCompleted, select, true{Список задач пуст.} other{Список невыполненных задач пуст.}}'**
+  String taskListIsEmpty(String showCompleted);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

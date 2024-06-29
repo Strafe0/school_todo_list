@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         ],
         theme: lightTheme,
         darkTheme: darkTheme,
-        home: const TodoListScreen(),
+        home: const TaskMainScreen(),
         debugShowCheckedModeBanner: false,
       ),
     );

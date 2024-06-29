@@ -3,7 +3,7 @@
     "myTasks": "Мои дела",
     "loading": "Загрузка",
     "completed": "Выполнено - {count}",
-    "@comleted": {
+    "@completed": {
         "placeholders": {
             "count": {
                 "type": "int",
@@ -13,7 +13,7 @@
     },
     "newTask": "Новое",
     "no": "Нет",
-    "save": "Сохранить",
+    "buttonSave": "Сохранить",
     "buttonCancel": "Отмена",
     "taskLabelText": "Что нужно сделать...",
     "buttonDelete": "Удалить",
@@ -27,5 +27,17 @@
     "questionDeleteTask": "Удалить задачу?",
     "warningDeletionIsIrreversible": "После удаления задачу нельзя будет восстановить.",
     "errorCreationTask": "Ошибка создания задачи",
-    "errorUpdatingTask": "Ошибка обновления задачи"
+    "errorUpdatingTask": "Ошибка обновления задачи",
+    "errorLoadingTasks": "Произошла ошибка при загрузке задач.",
+    "buttonTryAgain": "Попробовать снова",
+    "taskListIsEmpty": "{showCompleted, select, true{Список задач пуст.} other{Список невыполненных задач пуст.}}",
+    "@taskListIsEmpty": {
+        "description": "Task list is empty",
+        "placeholders": {
+            "showCompleted": {
+                "type": "String",
+                "example": "true"
+            }
+        }
+    }
 }

@@ -11,6 +11,7 @@ class TaskListNotifier extends ChangeNotifier {
   List<Task> _tasks = [];
   bool _showCompleted = false;
   bool _isLoading = false;
+  bool _isError = false;
 
   bool get showCompleted => _showCompleted;
   set showCompleted(bool use) {
@@ -19,6 +20,7 @@ class TaskListNotifier extends ChangeNotifier {
   }
 
   bool get isLoading => _isLoading;
+  bool get isError => _isError;
 
   int get completedTasksCount {
     int count = 0;
@@ -36,12 +38,15 @@ class TaskListNotifier extends ChangeNotifier {
 
     try {
       _tasks = await _taskUseCase.getAllTasks();
+      _isError = false;
     } catch (error, stackTrace) {
       logger.e(
         "TaskListNotifier: error load tasks",
         error: error,
         stackTrace: stackTrace,
       );
+      _tasks.clear();
+      _isError = true;
     } finally {
       _isLoading = false;
       notifyListeners();

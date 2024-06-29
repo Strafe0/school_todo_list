@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart' as intl;
+
 import 'app_localizations.dart';
 
 /// The translations for Russian (`ru`).
@@ -11,7 +13,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get loading => 'Загрузка';
 
   @override
-  String completed(Object count) {
+  String completed(int count) {
     return 'Выполнено - $count';
   }
 
@@ -22,7 +24,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get no => 'Нет';
 
   @override
-  String get save => 'Сохранить';
+  String get buttonSave => 'Сохранить';
 
   @override
   String get buttonCancel => 'Отмена';
@@ -65,4 +67,22 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get errorUpdatingTask => 'Ошибка обновления задачи';
+
+  @override
+  String get errorLoadingTasks => 'Произошла ошибка при загрузке задач.';
+
+  @override
+  String get buttonTryAgain => 'Попробовать снова';
+
+  @override
+  String taskListIsEmpty(String showCompleted) {
+    String _temp0 = intl.Intl.selectLogic(
+      showCompleted,
+      {
+        'true': 'Список задач пуст.',
+        'other': 'Список невыполненных задач пуст.',
+      },
+    );
+    return '$_temp0';
+  }
 }
