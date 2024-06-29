@@ -10,8 +10,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_localizations:
+    sdk: flutter
   cupertino_icons: ^1.0.6
+  uuid: ^4.4.0
+  intl: ^0.19.0
+  logger: ^2.3.0
 
 dev_dependencies:
   flutter_test:
