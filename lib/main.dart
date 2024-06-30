@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:school_todo_list/data/source/local/database.dart';
 import 'package:school_todo_list/data/source/local/task_local_source.dart';
@@ -19,25 +20,20 @@ void main() async {
   logger.d("Starting the app!");
   await initializeDateFormatting('ru_RU', null);
   WidgetsFlutterBinding.ensureInitialized();
-  TaskRepository repo = await initRepo();
+  
+  await setupDependecies();
 
-  runApp(
-    MyApp(
-      repository: repo,
-    ),
-  );
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.repository});
-
-  final TaskRepository repository;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => TaskListNotifier(
-        TaskUseCase(repository: repository),
+        TaskUseCase(repository: GetIt.I.get<TaskRepository>()),
       )..loadTasks(),
       child: MaterialApp(
         title: 'Flutter Todo App',
@@ -60,17 +56,21 @@ class MyApp extends StatelessWidget {
   }
 }
 
-Future<TaskRepository> initRepo() async {
-  AppDatabaseImpl db = AppDatabaseImpl();
-  await db.init();
+Future<void> setupDependecies() async {
+  GetIt.I.registerSingletonAsync<TaskRepository>(() async {
+    AppDatabaseImpl db = AppDatabaseImpl();
+    await db.init();
 
-  var repo = TaskRepositoryImpl(
-    remoteSource: TaskRemoteSourceImpl(
-      Api.instance.taskService,
-      Api.instance.revisionHolder,
-    ),
-    database: TaskDatabaseImpl(db),
-  );
+    var repo = TaskRepositoryImpl(
+      remoteSource: TaskRemoteSourceImpl(
+        Api.instance.taskService,
+        Api.instance.revisionHolder,
+      ),
+      database: TaskDatabaseImpl(db),
+    );
 
-  return repo;
+    return repo;
+  });
+
+  await GetIt.I.isReady<TaskRepository>();
 }
