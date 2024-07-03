@@ -8,6 +8,7 @@ abstract class TaskDatabase {
   Future<void> addCachedTask(TaskDto task);
   Future<void> updateCachedTask(TaskDto task);
   Future<void> deleteCachedTaskById(String id);
+  Future<void> clearDatabase();
 }
 
 class TaskDatabaseImpl implements TaskDatabase {
@@ -45,5 +46,10 @@ class TaskDatabaseImpl implements TaskDatabase {
   @override
   Future<void> updateCachedTask(TaskDto task) async {
     await _db.updateTask(task);
+  }
+
+  @override
+  Future<void> clearDatabase() async {
+    await _db.clearDatabase();
   }
 }

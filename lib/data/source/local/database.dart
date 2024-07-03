@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:school_todo_list/data/dto/task_dto.dart';
+import 'package:school_todo_list/data/mappers/mappers.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -11,6 +12,7 @@ abstract class AppDatabase {
   Future<TaskDto> getTask(String id);
   Future<List<TaskDto>> getAll();
   Future<void> saveTaskList(List<TaskDto> list);
+  Future<void> clearDatabase();
 }
 
 class AppDatabaseImpl implements AppDatabase {
@@ -110,6 +112,12 @@ class AppDatabaseImpl implements AppDatabase {
       task.toDbJson(),
       where: "id = ?",
       whereArgs: [task.id],
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  @override
+  Future<void> clearDatabase() async {
+    await _db.delete(tableName);
   }
 }

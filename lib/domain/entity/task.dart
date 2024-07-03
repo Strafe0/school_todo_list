@@ -1,4 +1,3 @@
-import 'package:school_todo_list/data/dto/task_dto.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:uuid/uuid.dart';
 
@@ -20,57 +19,12 @@ class Task {
   Importance importance;
   DateTime? deadline;
   DateTime createdAt;
-  DateTime changedAt;
-
+  DateTime changedAt; //TODO: менять время
   bool done;
 
   bool get hasDeadline => deadline != null;
 
   void toggle() {
     done = !done;
-  }
-}
-
-extension TaskExtension on Task {
-  TaskDto toTaskDto() {
-    return TaskDto(
-      id: id,
-      text: title,
-      importance: switch (importance) {
-        Importance.none => "basic",
-        Importance.low => "low",
-        Importance.high => "important",
-      },
-      deadline: hasDeadline
-          ? Duration(milliseconds: deadline!.millisecondsSinceEpoch).inSeconds
-          : null,
-      done: done,
-      createdAt: Duration(
-        milliseconds: createdAt.millisecondsSinceEpoch,
-      ).inSeconds,
-      changedAt: Duration(
-        milliseconds: changedAt.millisecondsSinceEpoch,
-      ).inSeconds,
-      lastUpdatedBy: "123", //TODO: add device id
-    );
-  }
-
-  Task copyWith({
-    String? title,
-    bool? done,
-    Importance? importance,
-    DateTime? deadline,
-    DateTime? createdAt,
-    DateTime? changedAt,
-  }) {
-    return Task(
-      id: id,
-      title: title ?? this.title,
-      done: done ?? this.done,
-      importance: importance ?? this.importance,
-      deadline: deadline ?? this.deadline,
-      createdAt: createdAt ?? this.createdAt,
-      changedAt: changedAt ?? this.changedAt,
-    );
   }
 }

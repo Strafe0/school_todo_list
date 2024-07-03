@@ -1,17 +1,40 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:school_todo_list/data/offline/offline_manager.dart';
+import 'package:school_todo_list/data/offline/update_event.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/domain/usecase/task_usecase.dart';
 import 'package:school_todo_list/logger.dart';
 
 class TaskListNotifier extends ChangeNotifier {
-  TaskListNotifier(this._taskUseCase);
+  TaskListNotifier(this._taskUseCase, this._offlineManager) {
+    _sub = _offlineManager.updateEventStream.listen((event) {
+      if (event is UpdateStart) {
+        logger.d("UpdateStart");
+        _isLoading = true;
+        notifyListeners();
+      } else {
+        logger.d("UpdateEnd");
+        _isLoading = false;
+        notifyListeners();
+      }
+    }); 
+  }
 
   final TaskUseCase _taskUseCase;
+  final OfflineManager _offlineManager;
+
+  StreamSubscription<UpdateEvent>? _sub;
 
   List<Task> _tasks = [];
+
   bool _showCompleted = false;
   bool _isLoading = false;
   bool _isError = false;
+
+  Stream<bool> get connectionStream =>
+      _offlineManager.connectionChecker.connectionStream;
 
   bool get showCompleted => _showCompleted;
   set showCompleted(bool use) {
@@ -90,5 +113,12 @@ class TaskListNotifier extends ChangeNotifier {
 
     notifyListeners();
     return result;
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    _sub = null;
+    super.dispose();
   }
 }

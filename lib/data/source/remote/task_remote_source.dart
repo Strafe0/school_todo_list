@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:school_todo_list/data/dto/task_dto.dart';
+import 'package:school_todo_list/data/mappers/mappers.dart';
 import 'package:school_todo_list/data/source/remote/api/responses/response.dart';
 import 'package:school_todo_list/data/source/remote/api/revision_holder.dart';
 import 'package:school_todo_list/data/source/remote/api/services/task_service.dart';
@@ -116,7 +115,9 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
     try {
       ListResponse response = await _taskService.updateAll(
         {
-          "list": jsonEncode(list),
+          "list": [
+            ...list.map((t) => t.toJson()),
+          ],
         },
       );
       revisionHolder.revision = response.revision;

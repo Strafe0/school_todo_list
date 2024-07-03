@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/logger.dart';
+import 'package:school_todo_list/presentation/main_screen/body/offline_label.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/main_screen/body/main_screen_body.dart';
@@ -43,6 +44,9 @@ class _MainScreenState extends State<MainScreen> {
                 onRefresh: () => notifier.loadTasks(),
                 child: CustomScrollView(
                   slivers: [
+                    const SliverToBoxAdapter(
+                      child: OfflineLabel(),
+                    ),
                     MainScreenBody(refreshIndicatorKey: _refreshKey),
                   ],
                 ),
