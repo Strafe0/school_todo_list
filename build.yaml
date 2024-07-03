@@ -1,0 +1,9 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        enabled: true
+        generate_for:
+          - "lib/data/dto/task_dto.dart"
+          - "lib/data/source/remote/api/responses/response.dart"
+          - "lib/data/source/remote/api/services/task_service.dart"
