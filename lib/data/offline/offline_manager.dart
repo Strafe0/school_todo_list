@@ -10,11 +10,12 @@ class OfflineManager {
       : _repository = repository {
     _connectionSub = connectionChecker.connectionStream.listen(
       (bool hasConnection) async {
-        if (hasConnection) {
+        if (hasConnection && !_oldConnectionValue) {
           _streamController.add(UpdateStart());
           await _repository.updateOutdatedData();
           _streamController.add(UpdateEnd());
         }
+        _oldConnectionValue = hasConnection;
       },
     );
   }
@@ -25,6 +26,7 @@ class OfflineManager {
   final StreamController<UpdateEvent> _streamController = StreamController();
   Stream<UpdateEvent> get updateEventStream => _streamController.stream;
 
+  bool _oldConnectionValue = true;
   StreamSubscription<bool>? _connectionSub;
 
   void dispose() {
