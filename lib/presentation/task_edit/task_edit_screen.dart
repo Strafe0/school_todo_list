@@ -190,7 +190,7 @@ class _TaskTextFieldState extends State<TaskTextField> {
             ),
           ),
           onChanged: (String text) {
-            notifier.taskTitle = text;
+            notifier.taskTitle = text.trim();
           },
         ),
       ),
