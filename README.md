@@ -25,7 +25,7 @@ Flutter проект мобильного приложения "TODO лист".
     </tr>
     <tr>
         <td>
-            <img src="/screenshots/main_screen.jpg">
+            <img src="/screenshots/main_screen_new.jpg">
         </td>
         <td>
             <img src="/screenshots/main_screen_eng.jpg">
