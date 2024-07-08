@@ -7,9 +7,10 @@ import 'package:school_todo_list/di.dart';
 import 'package:school_todo_list/domain/usecase/task_usecase.dart';
 import 'package:school_todo_list/l10n/app_localizations.dart';
 import 'package:school_todo_list/logger.dart';
+import 'package:school_todo_list/navigation/router_delegate.dart';
+import 'package:school_todo_list/navigation/router_information_parser.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/themes.dart';
-import 'package:school_todo_list/presentation/main_screen/main_screen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         GetIt.I.get<TaskUseCase>(),
         GetIt.I.get<OfflineManager>(),
       )..loadTasks(),
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Flutter Todo App',
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -46,7 +47,8 @@ class MyApp extends StatelessWidget {
         ],
         theme: lightTheme,
         darkTheme: darkTheme,
-        home: const MainScreen(),
+        routerDelegate: MyRouterDelegate(),
+        routeInformationParser: MyRouterInformationParser(),
         debugShowCheckedModeBanner: false,
       ),
     );

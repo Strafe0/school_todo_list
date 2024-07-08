@@ -5,6 +5,7 @@ import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
+import 'package:school_todo_list/navigation/router_delegate.dart';
 import 'package:school_todo_list/presentation/notifiers/task_edit_notifier.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
@@ -90,7 +91,8 @@ class TaskEditScreenAppBar extends StatelessWidget
         child: IconButton(
           onPressed: () {
             logger.d("TaskEditScreen close");
-            Navigator.of(context).pop();
+            (Router.of(context).routerDelegate as MyRouterDelegate)
+                .showMainScreen();
           },
           icon: const Icon(Icons.close),
         ),
@@ -134,7 +136,8 @@ class TaskEditScreenAppBar extends StatelessWidget
 
     if (context.mounted) {
       if (isSuccess) {
-        Navigator.of(context).pop();
+        (Router.of(context).routerDelegate as MyRouterDelegate)
+            .showMainScreen();
       } else {
         showSnackBar(context, context.loc.errorSavingTask);
       }
@@ -392,7 +395,8 @@ class DeleteTaskButton extends StatelessWidget {
         if (!isSuccess) {
           showSnackBar(context, context.loc.errorDeletingTask);
         } else {
-          Navigator.of(context).pop();
+          (Router.of(context).routerDelegate as MyRouterDelegate)
+            .showMainScreen();
         }
       }
     }
