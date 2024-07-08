@@ -1,0 +1,43 @@
+{
+    "@@locale": "en",
+    "myTasks": "My tasks",
+    "loading": "Loading",
+    "completed": "Completed - {count}",
+    "@completed": {
+        "placeholders": {
+            "count": {
+                "type": "int",
+                "example": "5"
+            }
+        }
+    },
+    "newTask": "New",
+    "no": "No",
+    "buttonSave": "Save",
+    "buttonCancel": "Cancel",
+    "taskLabelText": "What should be done...",
+    "buttonDelete": "Delete",
+    "importance": "Importance",
+    "importanceLow": "Low",
+    "importanceHigh": "High",
+    "importanceNone": "None",
+    "errorSavingTask": "Failed to save task",
+    "titleDeadline": "Do it before",
+    "errorDeletingTask": "Failed to delete task",
+    "questionDeleteTask": "Delete task?",
+    "warningDeletionIsIrreversible": "Once deleted, the task cannot be restored.",
+    "errorCreationTask": "Failed to create task",
+    "errorUpdatingTask": "Failed to update task",
+    "errorLoadingTasks": "An error occurred while loading tasks.",
+    "buttonTryAgain": "Try again",
+    "taskListIsEmpty": "{showCompleted, select, true{Task list is empty.} other{The list of outstanding tasks is empty.}}",
+    "@taskListIsEmpty": {
+        "description": "Task list is empty",
+        "placeholders": {
+            "showCompleted": {
+                "type": "String",
+                "example": "true"
+            }
+        }
+    }
+}

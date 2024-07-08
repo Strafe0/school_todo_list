@@ -5,6 +5,7 @@ class DismissibleBackground extends StatelessWidget {
     super.key,
     required this.color,
     BorderRadius? borderRadius,
+    required this.alignment,
     required this.padding,
     required this.icon,
     required this.iconColor,
@@ -12,6 +13,7 @@ class DismissibleBackground extends StatelessWidget {
 
   final Color color;
   final BorderRadius? borderRadius;
+  final Alignment alignment;
   final EdgeInsets padding;
   final IconData icon;
   final Color iconColor;
@@ -24,7 +26,7 @@ class DismissibleBackground extends StatelessWidget {
         borderRadius: borderRadius,
       ),
       child: Align(
-        alignment: Alignment.centerLeft,
+        alignment: alignment,
         child: Padding(
           padding: padding,
           child: Icon(

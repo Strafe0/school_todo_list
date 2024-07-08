@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:school_todo_list/l10n/l10n_extension.dart';
+import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 
 class MySliverAppBar extends SliverPersistentHeaderDelegate {
   MySliverAppBar({
     required this.expandedHeight,
     required this.collapsedHeight,
-    required this.completedTasksVisibility,
   });
 
   final double expandedHeight;
   final double collapsedHeight;
-  final ValueNotifier<bool> completedTasksVisibility;
 
   @override
   Widget build(
@@ -27,7 +28,7 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
           bottom: (46 - shrinkOffset).clamp(16, 46),
           left: (60 - shrinkOffset).clamp(16, 60),
           child: Text(
-            "Мои дела",
+            context.loc.myTasks,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
                   fontSize: (32 - shrinkOffset / 3).clamp(20, 32),
                 ),
@@ -43,7 +44,7 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
             child: Opacity(
               opacity: (1 - shrinkOffset / 20).clamp(0, 1),
               child: Text(
-                "Выполнено - 10",
+                completedTasksCount(context),
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       color: Theme.of(context).colorScheme.tertiary,
                     ),
@@ -51,15 +52,22 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
             ),
           ),
         ),
-        Positioned(
+        const Positioned(
           right: 12,
           bottom: 0,
-          child: VisibilityButton(
-            completedTasksVisibility: completedTasksVisibility,
-          ),
+          child: VisibilityButton(),
         ),
       ],
     );
+  }
+
+  String completedTasksCount(BuildContext context) {
+    final notifier = Provider.of<TaskListNotifier>(context);
+    if (notifier.isLoading) {
+      return context.loc.loading;
+    } else {
+      return context.loc.completed(notifier.completedTasksCount);
+    }
   }
 
   @override
@@ -74,29 +82,19 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
   }
 }
 
-class VisibilityButton extends StatefulWidget {
-  const VisibilityButton({super.key, required this.completedTasksVisibility});
+class VisibilityButton extends StatelessWidget {
+  const VisibilityButton({super.key});
 
-  final ValueNotifier<bool> completedTasksVisibility;
-
-  @override
-  State<VisibilityButton> createState() => _VisibilityButtonState();
-}
-
-class _VisibilityButtonState extends State<VisibilityButton> {
   @override
   Widget build(BuildContext context) {
+    TaskListNotifier notifier = Provider.of<TaskListNotifier>(context);
+
     return IconButton(
       onPressed: () {
-        setState(() {
-          widget.completedTasksVisibility.value =
-              !widget.completedTasksVisibility.value;
-        });
+        notifier.showCompleted = !notifier.showCompleted;
       },
       icon: Icon(
-        widget.completedTasksVisibility.value
-            ? Icons.visibility_off
-            : Icons.visibility,
+        notifier.showCompleted ? Icons.visibility_off : Icons.visibility,
         color: Theme.of(context).colorScheme.primary,
       ),
     );

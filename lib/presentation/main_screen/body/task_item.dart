@@ -1,127 +1,135 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
+import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
+import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/dismissible_background.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
+import 'package:school_todo_list/presentation/utils/snack_bar.dart';
 import 'package:school_todo_list/presentation/utils/text_with_importance_level.dart';
 
-class TaskListTile extends StatefulWidget {
-  const TaskListTile({
+class TaskItem extends StatelessWidget {
+  const TaskItem({
     super.key,
     required this.task,
-    required this.remove,
-    required this.updateList,
   });
 
   final Task task;
-  final void Function(String id) remove;
-  final void Function() updateList;
 
-  @override
-  State<TaskListTile> createState() => _TaskListTileState();
-}
-
-class _TaskListTileState extends State<TaskListTile> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       clipBehavior: Clip.hardEdge,
       child: Dismissible(
-        key: ValueKey(widget.task),
+        key: ValueKey(task.id),
         direction: DismissDirection.horizontal,
         background: DismissibleBackground(
           color: Theme.of(context).colorScheme.secondary,
+          alignment: Alignment.centerLeft,
           padding: const EdgeInsets.only(left: 24.0),
           icon: Icons.check,
           iconColor: Theme.of(context).colorScheme.onSecondary,
         ),
         secondaryBackground: DismissibleBackground(
           color: Theme.of(context).colorScheme.error,
+          alignment: Alignment.centerRight,
           padding: const EdgeInsets.only(right: 24),
-          icon: Icons.check,
+          icon: Icons.delete,
           iconColor: Theme.of(context).colorScheme.onError,
         ),
         onDismissed: (direction) {
           logger.d("Dismissible action: $direction");
         },
-        confirmDismiss: (direction) {
+        confirmDismiss: (direction) async {
           if (direction == DismissDirection.startToEnd) {
-            setState(() {
-              widget.task.toggle();
-              widget.updateList();
-            });
+            _completeTask(context);
           } else if (direction == DismissDirection.endToStart) {
-            setState(() {
-              widget.remove(widget.task.id);
-            });
+            _deleteTask(context);
           }
 
           return Future.value(false);
         },
-        child: TaskTile(
-          task: widget.task,
-          updateList: widget.updateList,
+        child: _TaskListTile(
+          task: task,
+          completeTask: _completeTask,
         ),
       ),
     );
   }
+
+  void _completeTask(BuildContext context) async {
+    Task updatedTask = task.copyWith(done: !task.done);
+    bool result = await Provider.of<TaskListNotifier>(
+      context,
+      listen: false,
+    ).updateTask(updatedTask);
+    
+    if (result) {
+      task.toggle();
+    } else if (context.mounted) {
+      showSnackBar(context, context.loc.errorUpdatingTask);
+    }
+  }
+
+  void _deleteTask(BuildContext context) async {
+    logger.i(
+      "Deleting task (swipe) ${task.id}: "
+      "${task.title}",
+    );
+
+    final taskListNotifier = Provider.of<TaskListNotifier>(
+      context,
+      listen: false,
+    );
+    bool isSuccess = await taskListNotifier.deleteTask(task.id);
+    if (!isSuccess && context.mounted) {
+      showSnackBar(context, context.loc.errorDeletingTask);
+    }
+  }
 }
 
-class TaskTile extends StatefulWidget {
-  const TaskTile({
-    super.key,
-    required this.task,
-    required this.updateList,
-  });
+class _TaskListTile extends StatelessWidget {
+  const _TaskListTile({required this.task, required this.completeTask});
 
   final Task task;
-  final void Function() updateList;
+  final void Function(BuildContext context) completeTask;
 
-  @override
-  State<TaskTile> createState() => _TaskTileState();
-}
-
-class _TaskTileState extends State<TaskTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: Checkbox(
-        value: widget.task.isCompleted,
+        value: task.done,
         onChanged: (bool? value) {
-          logger.d("Toggle task ${widget.task.id}. New value: $value");
-          setState(() {
-            widget.task.toggle();
-            widget.updateList();
-          });
+          logger.d("Toggle task ${task.id}. New value: $value");
+          completeTask(context);
         },
         fillColor: WidgetStatePropertyAll(
-          widget.task.isCompleted
-              ? Theme.of(context).colorScheme.secondary
-              : null,
+          task.done ? Theme.of(context).colorScheme.secondary : null,
         ),
         checkColor: Theme.of(context).colorScheme.surfaceContainer,
-        shape: checkboxShape(widget.task),
+        shape: checkboxShape(task),
         side: BorderSide(
-          color: widget.task.importance == Importance.high
+          color: task.importance == Importance.high
               ? Theme.of(context).colorScheme.error
               : Theme.of(context).dividerColor,
           width: 2,
         ),
       ),
-      title: TaskTitle(task: widget.task),
-      subtitle: widget.task.hasDeadline
-          ? TaskDeadline(
-              deadline: widget.task.deadline!,
-              isCompleted: widget.task.isCompleted,
+      title: _TaskTitle(task: task),
+      subtitle: task.hasDeadline
+          ? _TaskDeadline(
+              deadline: task.deadline!,
+              isCompleted: task.done,
             )
           : null,
       contentPadding: const EdgeInsets.only(
         left: 8.0,
         right: 8.0,
       ),
-      trailing: TaskInfoButton(task: widget.task),
+      trailing: _TaskInfoButton(task: task),
     );
   }
 
@@ -132,11 +140,8 @@ class _TaskTileState extends State<TaskTile> {
   }
 }
 
-class TaskTitle extends StatelessWidget {
-  const TaskTitle({
-    super.key,
-    required this.task,
-  });
+class _TaskTitle extends StatelessWidget {
+  const _TaskTitle({required this.task});
 
   final Task task;
 
@@ -146,10 +151,10 @@ class TaskTitle extends StatelessWidget {
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
-        color: task.isCompleted
+        color: task.done
             ? Theme.of(context).dividerColor
             : Theme.of(context).colorScheme.onSurface,
-        decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+        decoration: task.done ? TextDecoration.lineThrough : null,
         decorationColor: Theme.of(context).dividerColor,
       ),
       createTextSpanWithImportance(
@@ -160,11 +165,8 @@ class TaskTitle extends StatelessWidget {
   }
 }
 
-class TaskInfoButton extends StatelessWidget {
-  const TaskInfoButton({
-    super.key,
-    required this.task,
-  });
+class _TaskInfoButton extends StatelessWidget {
+  const _TaskInfoButton({required this.task});
 
   final Task task;
 
@@ -189,12 +191,8 @@ class TaskInfoButton extends StatelessWidget {
   }
 }
 
-class TaskDeadline extends StatelessWidget {
-  const TaskDeadline({
-    super.key,
-    required this.deadline,
-    required this.isCompleted,
-  });
+class _TaskDeadline extends StatelessWidget {
+  const _TaskDeadline({required this.deadline, required this.isCompleted});
 
   final DateTime deadline;
   final bool isCompleted;
@@ -202,7 +200,7 @@ class TaskDeadline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      convertDateTimeToString(deadline),
+      convertDateTimeToString(deadline, Localizations.localeOf(context)),
       style: Theme.of(context).textTheme.bodySmall?.copyWith(
             color: Theme.of(context).dividerColor,
             decoration: isCompleted ? TextDecoration.lineThrough : null,
