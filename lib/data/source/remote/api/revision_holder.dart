@@ -1,5 +1,14 @@
-class RevisionHolder {
-  RevisionHolder() : revision = 0;
+import 'package:school_todo_list/data/source/local/shared_prefs.dart';
 
-  int revision;
+class RevisionHolder {
+  RevisionHolder(this._prefs);
+
+  final SharedPrefsManager _prefs;
+
+  int get revision => _prefs.readRevision();
+  
+  Future<void> saveRevision(int newValue) async =>
+      await _prefs.writeRevision(newValue);
+
+  static const revisionKey = "revision";
 }
