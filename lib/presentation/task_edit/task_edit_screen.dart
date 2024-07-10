@@ -99,6 +99,7 @@ class TaskEditScreenAppBar extends StatelessWidget
       ),
       actions: [
         TextButton(
+          key: const ValueKey("SaveButton"),
           onPressed: () => _onSavePressed(context),
           child: Text(context.loc.buttonSave.toUpperCase()),
         ),
@@ -217,6 +218,7 @@ class TaskImportanceField extends StatelessWidget {
     return MenuAnchor(
       menuChildren: [
         MenuItemButton(
+          key: const ValueKey('MenuItemButton_none'),
           child: Text(
             context.loc.importanceNone,
             style: Theme.of(context).textTheme.bodyLarge,
@@ -227,6 +229,7 @@ class TaskImportanceField extends StatelessWidget {
           },
         ),
         MenuItemButton(
+          key: const ValueKey('MenuItemButton_low'),
           child: Text.rich(
             style: Theme.of(context).textTheme.bodyLarge,
             createTextSpanWithImportance(
@@ -240,6 +243,7 @@ class TaskImportanceField extends StatelessWidget {
           },
         ),
         MenuItemButton(
+          key: const ValueKey('MenuItemButton_high'),
           child: Text.rich(
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.error,
