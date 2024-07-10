@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:school_todo_list/navigation/navigation_state.dart';
 import 'package:school_todo_list/navigation/routes.dart';
 
-class MyRouterInformationParser extends RouteInformationParser<NavigationState> {
+class MyRouterInformationParser
+    extends RouteInformationParser<NavigationState> {
   @override
-  Future<NavigationState> parseRouteInformation(RouteInformation routeInformation) async {
+  Future<NavigationState> parseRouteInformation(
+      RouteInformation routeInformation) async {
     // "task"
     if (routeInformation.uri.pathSegments.length == 1) {
       final path = routeInformation.uri.pathSegments.first;

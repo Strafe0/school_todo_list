@@ -400,7 +400,7 @@ class DeleteTaskButton extends StatelessWidget {
           showSnackBar(context, context.loc.errorDeletingTask);
         } else {
           (Router.of(context).routerDelegate as MyRouterDelegate)
-            .showMainScreen();
+              .showMainScreen();
         }
       }
     }

@@ -37,7 +37,7 @@ class TaskDto {
     Map<String, dynamic> json = Map.of(dbJson);
 
     json["done"] = json["done"] == 1 ? true : false;
-  
+
     return TaskDto.fromJson(json);
   }
 }

@@ -6,7 +6,7 @@ class RevisionHolder {
   final SharedPrefsManager _prefs;
 
   int get revision => _prefs.readRevision();
-  
+
   Future<void> saveRevision(int newValue) async =>
       await _prefs.writeRevision(newValue);
 

@@ -67,7 +67,7 @@ class TaskItem extends StatelessWidget {
       context,
       listen: false,
     ).updateTask(updatedTask);
-    
+
     if (result) {
       task.toggle();
     } else if (context.mounted) {

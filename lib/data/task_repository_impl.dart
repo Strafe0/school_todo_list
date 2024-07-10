@@ -22,7 +22,7 @@ class TaskRepositoryImpl implements TaskRepository {
   final TaskDatabase _db;
   final ConnectionChecker _connectionChecker;
 
-  Future<bool> get hasConnection async => _connectionChecker.hasConnection(); 
+  Future<bool> get hasConnection async => _connectionChecker.hasConnection();
 
   @override
   Future<bool> addTask(Task task) async {
@@ -35,7 +35,7 @@ class TaskRepositoryImpl implements TaskRepository {
         logger.d("Repo: addTask (offline)");
         await _db.addCachedTask(task.toTaskDto());
       }
-      
+
       return true;
     } catch (error, stackTrace) {
       logger.e("Failed to add task", error: error, stackTrace: stackTrace);
@@ -52,7 +52,7 @@ class TaskRepositoryImpl implements TaskRepository {
       }
       logger.d("Repo: delete task on device");
       await _db.deleteCachedTaskById(id);
-      
+
       return true;
     } catch (error, stackTrace) {
       logger.e(
@@ -117,7 +117,9 @@ class TaskRepositoryImpl implements TaskRepository {
       updatedTask.changedAt = DateTime.now();
       if (await hasConnection) {
         logger.d("Repo: updateTask (online)");
-        TaskDto taskDto = await _remoteSource.updateTask(updatedTask.toTaskDto());
+        TaskDto taskDto = await _remoteSource.updateTask(
+          updatedTask.toTaskDto(),
+        );
         await _db.updateCachedTask(taskDto);
       } else {
         logger.d("Repo: updateTask (offline)");
@@ -138,7 +140,7 @@ class TaskRepositoryImpl implements TaskRepository {
   Future<bool> updateTaskList(List<Task> list) async {
     try {
       List<TaskDto> taskDtos = TaskListMapper.toTaskDtoListWithTimeUpdate(list);
-      
+
       if (await hasConnection) {
         logger.d("Repo: updateTaskList");
         List<TaskDto> remoteTasks =
@@ -158,7 +160,7 @@ class TaskRepositoryImpl implements TaskRepository {
       return false;
     }
   }
-  
+
   @override
   Future<bool> updateOutdatedData() async {
     logger.d("Repo: updateOutdatedData");
@@ -172,7 +174,7 @@ class TaskRepositoryImpl implements TaskRepository {
           outdatedTasks,
         );
         logger.d("Updated tasks: ${updatedTasks.length}");
-  
+
         await _db.clearDatabase();
         await _db.saveTaskList(updatedTasks);
       }

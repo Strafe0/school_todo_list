@@ -19,7 +19,7 @@ class TaskListNotifier extends ChangeNotifier {
         _isLoading = false;
         notifyListeners();
       }
-    }); 
+    });
   }
 
   final TaskUseCase _taskUseCase;

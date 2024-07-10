@@ -60,7 +60,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get questionDeleteTask => 'Удалить задачу?';
 
   @override
-  String get warningDeletionIsIrreversible => 'После удаления задачу нельзя будет восстановить.';
+  String get warningDeletionIsIrreversible =>
+      'После удаления задачу нельзя будет восстановить.';
 
   @override
   String get errorCreationTask => 'Ошибка создания задачи';

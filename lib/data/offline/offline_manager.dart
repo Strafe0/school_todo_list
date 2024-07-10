@@ -5,9 +5,10 @@ import 'package:school_todo_list/data/source/remote/connectivity.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
 
 class OfflineManager {
-  OfflineManager({required TaskRepository repository,
-      required this.connectionChecker})
-      : _repository = repository {
+  OfflineManager({
+    required TaskRepository repository,
+    required this.connectionChecker,
+  }) : _repository = repository {
     _connectionSub = connectionChecker.connectionStream.listen(
       (bool hasConnection) async {
         if (hasConnection && !_oldConnectionValue) {
