@@ -9,13 +9,13 @@ import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
 
+import 'dto/fake_task_dto.dart';
+
 class TaskDatabaseMock extends Mock implements TaskDatabaseImpl {}
 
 class TaskRemoteSourceMock extends Mock implements TaskRemoteSourceImpl {}
 
 class ConnectionCheckerMock extends Mock implements ConnectionChecker {}
-
-class TaskDtoFake extends Fake implements TaskDto {}
 
 void main() {
   late TaskDatabase db;
@@ -33,7 +33,7 @@ void main() {
   );
 
   setUp(() {
-    registerFallbackValue(TaskDtoFake());
+    registerFallbackValue(FakeTaskDto());
 
     remoteSourceMock = TaskRemoteSourceMock();
     db = TaskDatabaseMock();
@@ -41,7 +41,7 @@ void main() {
 
     // mock task creation
     when(() => remoteSourceMock.addTask(any(that: isA<TaskDto>())))
-        .thenAnswer((_) => Future.value(TaskDtoFake()));
+        .thenAnswer((_) => Future.value(FakeTaskDto()));
     when(() => db.addCachedTask(any(that: isA<TaskDto>())))
         .thenAnswer((_) => Future.value());
 
