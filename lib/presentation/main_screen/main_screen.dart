@@ -7,6 +7,7 @@ import 'package:school_todo_list/presentation/main_screen/body/offline_label.dar
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/main_screen/body/main_screen_body.dart';
 import 'package:school_todo_list/presentation/main_screen/main_screen_app_bar.dart';
+import 'package:school_todo_list/presentation/layout_manager.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -21,6 +22,8 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     setSystemUIOverlayStyle();
+    final bool isPortrait = LayoutManager.isPortrait(context);
+    final bool isTablet = LayoutManager.isTablet(context);
 
     return SafeArea(
       child: Scaffold(
@@ -33,8 +36,8 @@ class _MainScreenState extends State<MainScreen> {
                   SliverPersistentHeader(
                     pinned: true,
                     delegate: MySliverAppBar(
-                      expandedHeight: 148,
-                      collapsedHeight: 88,
+                      expandedHeight: isPortrait || isTablet ? 148 : 80,
+                      collapsedHeight: isPortrait || isTablet ? 88 : 44,
                     ),
                   ),
                 ];

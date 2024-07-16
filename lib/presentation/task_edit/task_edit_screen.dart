@@ -205,12 +205,6 @@ class _TaskTextFieldState extends State<TaskTextField> {
 class TaskImportanceField extends StatelessWidget {
   const TaskImportanceField({super.key});
 
-  Color? getImportanceColor(BuildContext context, Importance importance) =>
-      switch (importance) {
-        Importance.high => Theme.of(context).colorScheme.error,
-        _ => null,
-      };
-
   @override
   Widget build(BuildContext context) {
     final notifier = Provider.of<TaskEditNotifier>(context);
@@ -322,15 +316,16 @@ class _TaskDeadlineFieldState extends State<TaskDeadlineField> {
       pickedDateTime = null;
     }
 
-    if (context.mounted) {
-      Provider.of<TaskEditNotifier>(
-        context,
-        listen: false,
-      ).deadline = pickedDateTime;
-      logger.d("Selected deadline: $pickedDateTime");
-    } else {
+    if (!mounted) {
       logger.e("TaskDeadlineField: context not mounted");
+      return;
     }
+
+    Provider.of<TaskEditNotifier>(
+      context,
+      listen: false,
+    ).deadline = pickedDateTime;
+    logger.d("Selected deadline: $pickedDateTime");
   }
 
   Text? getSubtitleWithDate(DateTime? date) {

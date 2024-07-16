@@ -6,6 +6,7 @@ import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/navigation/router_delegate.dart';
+import 'package:school_todo_list/presentation/layout_manager.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/dismissible_background.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
@@ -120,7 +121,9 @@ class _TaskListTile extends StatelessWidget {
         ),
       ),
       title: _TaskTitle(task: task),
-      subtitle: task.hasDeadline
+      subtitle: task.hasDeadline &&
+              (LayoutManager.isPortrait(context) &&
+                  !LayoutManager.isTablet(context))
           ? _TaskDeadline(
               deadline: task.deadline!,
               isCompleted: task.done,
@@ -148,7 +151,7 @@ class _TaskTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
+    Widget title = Text.rich(
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
@@ -163,6 +166,47 @@ class _TaskTitle extends StatelessWidget {
         text: task.title,
       ),
     );
+
+    if (LayoutManager.isLandscape(context) || LayoutManager.isTablet(context)) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            flex: 5,
+            fit: FlexFit.tight,
+            child: title,
+          ),
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: Center(
+              child: Text(
+                task.importance.getImportanceText(context),
+                style: TextStyle(
+                  color: getImportanceColor(context, task.importance),
+                ),
+              ),
+            ),
+          ),
+          task.hasDeadline
+              ? Flexible(
+                  flex: 2,
+                  fit: FlexFit.tight,
+                  child: Center(
+                    child: _TaskDeadline(
+                      deadline: task.deadline!,
+                      isCompleted: task.done,
+                    ),
+                  ),
+                )
+              : const Spacer(
+                  flex: 2,
+                ),
+        ],
+      );
+    }
+
+    return title;
   }
 }
 
