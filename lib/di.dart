@@ -1,4 +1,6 @@
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:school_todo_list/data/offline/offline_manager.dart';
 import 'package:school_todo_list/data/source/local/database.dart';
@@ -12,6 +14,7 @@ import 'package:school_todo_list/data/source/remote/task_remote_source.dart';
 import 'package:school_todo_list/data/task_repository_impl.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
 import 'package:school_todo_list/domain/usecase/task_usecase.dart';
+import 'package:school_todo_list/logger.dart';
 
 Future<void> setupDependencies() async {
   GetIt.I.registerSingleton<ConnectionChecker>(ConnectionChecker());
@@ -82,4 +85,24 @@ Future<void> setupDependencies() async {
   });
 
   await GetIt.I.allReady();
+
+  _initCrashlytics();
+}
+
+void _initCrashlytics() {
+  FlutterError.onError = (errorDetails) {
+    logger.d('Caught error in FlutterError.onError');
+    FirebaseCrashlytics.instance.recordFlutterError(errorDetails);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    logger.d('Caught error in PlatformDispatcher.onError');
+    FirebaseCrashlytics.instance.recordError(
+      error,
+      stack,
+      fatal: true,
+    );
+    return true;
+  };
+  logger.d('Crashlytics initialized');
 }
