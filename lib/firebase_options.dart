@@ -65,5 +65,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'todo-school-b31a0.appspot.com',
     iosBundleId: 'com.example.schoolTodoList',
   );
-
 }

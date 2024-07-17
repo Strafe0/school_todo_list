@@ -5,7 +5,7 @@ class FormFactor {
   static double handset = 300;
 }
 
-enum ScreenType {tablet, handset}
+enum ScreenType { tablet, handset }
 
 ScreenType getFormFactor(BuildContext context) {
   double deviceWidth = MediaQuery.of(context).size.shortestSide;

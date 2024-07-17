@@ -213,10 +213,12 @@ class TaskRepositoryImpl implements TaskRepository {
     if (_revisionHolder.remoteRevision > _revisionHolder.localRevision) {
       for (var remoteTask in remoteTasksSet) {
         TaskDto? localTask = localTasksSet.lookup(remoteTask);
-        if (localTask == null) { // ok
+        if (localTask == null) {
+          // ok
           // На сервере задача есть, локально - нету
           tasksForLocalAdding.add(_db.addCachedTask(remoteTask));
-        } else if (localTask.changedAt < remoteTask.changedAt) { // ok
+        } else if (localTask.changedAt < remoteTask.changedAt) {
+          // ok
           // На сервере задача новее
           tasksForLocalUpdating.add(_db.updateCachedTask(remoteTask));
         } else if (localTask.changedAt != remoteTask.changedAt) {
@@ -232,10 +234,12 @@ class TaskRepositoryImpl implements TaskRepository {
     } else {
       for (var localTask in localTasksSet) {
         TaskDto? remoteTask = remoteTasksSet.lookup(localTask);
-        if (remoteTask == null) { // ok
+        if (remoteTask == null) {
+          // ok
           // На устройстве задача есть, на сервере нету
           tasksForRemoteAdding.add(_remoteSource.addTask(localTask));
-        } else if (remoteTask.changedAt < localTask.changedAt) { // ok
+        } else if (remoteTask.changedAt < localTask.changedAt) {
+          // ok
           // На устройстве задача новее
           tasksForRemoteUpdating.add(_remoteSource.updateTask(localTask));
         } else if (remoteTask.changedAt != localTask.changedAt) {
