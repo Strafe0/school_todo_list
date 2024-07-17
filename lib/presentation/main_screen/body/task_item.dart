@@ -76,7 +76,14 @@ class TaskItem extends StatelessWidget {
     if (result) {
       task.toggle();
     } else if (context.mounted) {
-      showSnackBar(context, context.loc.errorUpdatingTask);
+      showSnackBar(
+        context,
+        context.loc.errorUpdatingTask,
+        syncAction: Provider.of<TaskListNotifier>(
+          context,
+          listen: false,
+        ).loadTasks,
+      );
     }
   }
 
@@ -93,7 +100,11 @@ class TaskItem extends StatelessWidget {
     );
     bool isSuccess = await taskListNotifier.deleteTask(task.id);
     if (!isSuccess && context.mounted) {
-      showSnackBar(context, context.loc.errorDeletingTask);
+      showSnackBar(
+        context,
+        context.loc.errorDeletingTask,
+        syncAction: taskListNotifier.loadTasks,
+      );
     }
   }
 }

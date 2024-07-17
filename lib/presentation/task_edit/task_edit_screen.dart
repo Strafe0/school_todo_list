@@ -144,7 +144,6 @@ class TaskEditScreenAppBar extends StatelessWidget
 
     if (context.mounted) {
       if (isSuccess) {
-
         FirebaseAnalytics.instance.logScreenView(
           screenClass: "MainScreen",
           screenName: "Main screen",
@@ -152,7 +151,11 @@ class TaskEditScreenAppBar extends StatelessWidget
         (Router.of(context).routerDelegate as MyRouterDelegate)
             .showMainScreen();
       } else {
-        showSnackBar(context, context.loc.errorSavingTask);
+        showSnackBar(
+          context,
+          context.loc.errorSavingTask,
+          syncAction: taskListNotifier.loadTasks,
+        );
       }
     }
   }
@@ -404,7 +407,11 @@ class DeleteTaskButton extends StatelessWidget {
       );
       if (context.mounted) {
         if (!isSuccess) {
-          showSnackBar(context, context.loc.errorDeletingTask);
+          showSnackBar(
+            context,
+            context.loc.errorDeletingTask,
+            syncAction: taskListNotifier.loadTasks,
+          );
         } else {
           (Router.of(context).routerDelegate as MyRouterDelegate)
               .showMainScreen();

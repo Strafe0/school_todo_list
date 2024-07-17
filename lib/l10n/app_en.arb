@@ -40,5 +40,6 @@
             }
         }
     },
-    "offlineMode": "Offline mode"
+    "offlineMode": "Offline mode",
+    "buttonSync": "Synchronize"
 }

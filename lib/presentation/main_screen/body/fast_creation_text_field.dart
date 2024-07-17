@@ -46,7 +46,11 @@ class _FastCreationTextFieldState extends State<FastCreationTextField> {
         );
 
         if (!isSuccess && context.mounted) {
-          showSnackBar(context, context.loc.errorCreationTask);
+          showSnackBar(
+            context,
+            context.loc.errorCreationTask,
+            syncAction: taskListNotifier.loadTasks,
+          );
         } else {
           _textController.text = '';
         }

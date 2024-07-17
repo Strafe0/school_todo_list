@@ -236,6 +236,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'Оффлайн режим'**
   String get offlineMode;
+
+  /// No description provided for @buttonSync.
+  ///
+  /// In ru, this message translates to:
+  /// **'Синхронизировать'**
+  String get buttonSync;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
