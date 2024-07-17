@@ -88,4 +88,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get offlineMode => 'Оффлайн режим';
+
+  @override
+  String get buttonSync => 'Синхронизировать';
 }

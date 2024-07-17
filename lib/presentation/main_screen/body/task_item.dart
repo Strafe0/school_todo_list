@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/data/mappers/mappers.dart';
@@ -6,6 +7,7 @@ import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/navigation/router_delegate.dart';
+import 'package:school_todo_list/presentation/layout_manager.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/dismissible_background.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
@@ -46,6 +48,7 @@ class TaskItem extends StatelessWidget {
         },
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.startToEnd) {
+            FirebaseAnalytics.instance.logEvent(name: "complete_task_swipe");
             _completeTask(context);
           } else if (direction == DismissDirection.endToStart) {
             _deleteTask(context);
@@ -63,6 +66,8 @@ class TaskItem extends StatelessWidget {
 
   void _completeTask(BuildContext context) async {
     Task updatedTask = task.copyWith(done: !task.done);
+
+    FirebaseAnalytics.instance.logEvent(name: "complete_task");
     bool result = await Provider.of<TaskListNotifier>(
       context,
       listen: false,
@@ -71,7 +76,14 @@ class TaskItem extends StatelessWidget {
     if (result) {
       task.toggle();
     } else if (context.mounted) {
-      showSnackBar(context, context.loc.errorUpdatingTask);
+      showSnackBar(
+        context,
+        context.loc.errorUpdatingTask,
+        syncAction: Provider.of<TaskListNotifier>(
+          context,
+          listen: false,
+        ).loadTasks,
+      );
     }
   }
 
@@ -81,13 +93,18 @@ class TaskItem extends StatelessWidget {
       "${task.title}",
     );
 
+    FirebaseAnalytics.instance.logEvent(name: "delete_task_swipe");
     final taskListNotifier = Provider.of<TaskListNotifier>(
       context,
       listen: false,
     );
     bool isSuccess = await taskListNotifier.deleteTask(task.id);
     if (!isSuccess && context.mounted) {
-      showSnackBar(context, context.loc.errorDeletingTask);
+      showSnackBar(
+        context,
+        context.loc.errorDeletingTask,
+        syncAction: taskListNotifier.loadTasks,
+      );
     }
   }
 }
@@ -105,6 +122,7 @@ class _TaskListTile extends StatelessWidget {
         value: task.done,
         onChanged: (bool? value) {
           logger.d("Toggle task ${task.id}. New value: $value");
+          FirebaseAnalytics.instance.logEvent(name: "complete_task_checkbox");
           completeTask(context);
         },
         fillColor: WidgetStatePropertyAll(
@@ -120,7 +138,9 @@ class _TaskListTile extends StatelessWidget {
         ),
       ),
       title: _TaskTitle(task: task),
-      subtitle: task.hasDeadline
+      subtitle: task.hasDeadline &&
+              (LayoutManager.isPortrait(context) &&
+                  !LayoutManager.isTablet(context))
           ? _TaskDeadline(
               deadline: task.deadline!,
               isCompleted: task.done,
@@ -148,7 +168,7 @@ class _TaskTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text.rich(
+    Widget title = Text.rich(
       maxLines: 3,
       overflow: TextOverflow.ellipsis,
       style: TextStyle(
@@ -163,6 +183,47 @@ class _TaskTitle extends StatelessWidget {
         text: task.title,
       ),
     );
+
+    if (LayoutManager.isLandscape(context) || LayoutManager.isTablet(context)) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Flexible(
+            flex: 5,
+            fit: FlexFit.tight,
+            child: title,
+          ),
+          Flexible(
+            flex: 2,
+            fit: FlexFit.tight,
+            child: Center(
+              child: Text(
+                task.importance.getImportanceText(context),
+                style: TextStyle(
+                  color: getImportanceColor(context, task.importance),
+                ),
+              ),
+            ),
+          ),
+          task.hasDeadline
+              ? Flexible(
+                  flex: 2,
+                  fit: FlexFit.tight,
+                  child: Center(
+                    child: _TaskDeadline(
+                      deadline: task.deadline!,
+                      isCompleted: task.done,
+                    ),
+                  ),
+                )
+              : const Spacer(
+                  flex: 2,
+                ),
+        ],
+      );
+    }
+
+    return title;
   }
 }
 
@@ -177,6 +238,10 @@ class _TaskInfoButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: () {
         logger.d("Go to TaskEditScreen for editing");
+        FirebaseAnalytics.instance.logScreenView(
+          screenClass: "TaskEditScreen",
+          screenName: "Task edit screen (update task)",
+        );
         (Router.of(context).routerDelegate as MyRouterDelegate)
             .showEditTaskScreen(task);
       },

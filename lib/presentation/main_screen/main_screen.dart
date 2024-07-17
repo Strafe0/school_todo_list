@@ -1,12 +1,15 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:school_todo_list/env_config.dart';
 import 'package:school_todo_list/logger.dart';
 import 'package:school_todo_list/navigation/router_delegate.dart';
 import 'package:school_todo_list/presentation/main_screen/body/offline_label.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/main_screen/body/main_screen_body.dart';
 import 'package:school_todo_list/presentation/main_screen/main_screen_app_bar.dart';
+import 'package:school_todo_list/presentation/layout_manager.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -21,42 +24,61 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     setSystemUIOverlayStyle();
+    final bool isPortrait = LayoutManager.isPortrait(context);
+    final bool isTablet = LayoutManager.isTablet(context);
+
+    Widget body = Consumer<TaskListNotifier>(
+      builder: (context, notifier, child) {
+        return NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: MySliverAppBar(
+                  expandedHeight: isPortrait || isTablet ? 148 : 80,
+                  collapsedHeight: isPortrait || isTablet ? 88 : 44,
+                ),
+              ),
+            ];
+          },
+          body: RefreshIndicator(
+            key: _refreshKey,
+            onRefresh: () {
+              FirebaseAnalytics.instance.logEvent(name: "refresh_tasks");
+              return notifier.loadTasks();
+            },
+            child: CustomScrollView(
+              slivers: [
+                const SliverToBoxAdapter(
+                  child: OfflineLabel(),
+                ),
+                MainScreenBody(refreshIndicatorKey: _refreshKey),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (EnvConfig.isDevFlavor) {
+      body = Banner(
+        message: '[dev]',
+        location: BannerLocation.topStart,
+        child: body,
+      );
+    }
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        body: Consumer<TaskListNotifier>(
-          builder: (context, notifier, child) {
-            return NestedScrollView(
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
-                return [
-                  SliverPersistentHeader(
-                    pinned: true,
-                    delegate: MySliverAppBar(
-                      expandedHeight: 148,
-                      collapsedHeight: 88,
-                    ),
-                  ),
-                ];
-              },
-              body: RefreshIndicator(
-                key: _refreshKey,
-                onRefresh: () => notifier.loadTasks(),
-                child: CustomScrollView(
-                  slivers: [
-                    const SliverToBoxAdapter(
-                      child: OfflineLabel(),
-                    ),
-                    MainScreenBody(refreshIndicatorKey: _refreshKey),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
+        body: body,
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             logger.d("Go to TaskEditScreen for creation");
+            FirebaseAnalytics.instance.logScreenView(
+              screenClass: "TaskEditScreen",
+              screenName: "Task edit screen (create task)",
+            );
             (Router.of(context).routerDelegate as MyRouterDelegate)
                 .showNewTaskScreen();
           },

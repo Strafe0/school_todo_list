@@ -9,7 +9,7 @@ class TaskResponse {
   final int revision;
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ListResponse extends TaskResponse {
   ListResponse(super.status, super.revision, this.list);
 
@@ -19,7 +19,7 @@ class ListResponse extends TaskResponse {
       _$ListResponseFromJson(json);
 }
 
-@JsonSerializable()
+@JsonSerializable(createToJson: false)
 class ElementResponse extends TaskResponse {
   ElementResponse(super.status, super.revision, this.element);
 

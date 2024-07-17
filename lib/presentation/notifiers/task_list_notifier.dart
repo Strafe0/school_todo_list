@@ -89,6 +89,7 @@ class TaskListNotifier extends ChangeNotifier {
       }).toList();
 
   Future<bool> createTask(Task task) async {
+    task.title = task.title.trim();
     bool result = await _taskUseCase.createTask(task);
     if (result) {
       _tasks.add(task);
@@ -99,6 +100,7 @@ class TaskListNotifier extends ChangeNotifier {
   }
 
   Future<bool> updateTask(Task task) async {
+    task.title = task.title.trim();
     bool result = await _taskUseCase.updateTask(task);
 
     notifyListeners();

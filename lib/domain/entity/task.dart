@@ -19,7 +19,7 @@ class Task {
   Importance importance;
   DateTime? deadline;
   DateTime createdAt;
-  DateTime changedAt; //TODO: менять время
+  DateTime changedAt;
   bool done;
 
   bool get hasDeadline => deadline != null;
