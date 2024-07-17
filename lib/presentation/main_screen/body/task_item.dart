@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:school_todo_list/data/mappers/mappers.dart';
 import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
-import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
+import 'package:school_todo_list/navigation/router_delegate.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/dismissible_background.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
@@ -66,7 +67,7 @@ class TaskItem extends StatelessWidget {
       context,
       listen: false,
     ).updateTask(updatedTask);
-    
+
     if (result) {
       task.toggle();
     } else if (context.mounted) {
@@ -176,11 +177,8 @@ class _TaskInfoButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: () {
         logger.d("Go to TaskEditScreen for editing");
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => TaskEditScreen(taskForEdit: task),
-          ),
-        );
+        (Router.of(context).routerDelegate as MyRouterDelegate)
+            .showEditTaskScreen(task);
       },
       icon: Icon(
         Icons.info_outline,

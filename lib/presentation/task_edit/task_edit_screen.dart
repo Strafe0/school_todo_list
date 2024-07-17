@@ -5,6 +5,7 @@ import 'package:school_todo_list/domain/entity/importance.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/l10n/l10n_extension.dart';
 import 'package:school_todo_list/logger.dart';
+import 'package:school_todo_list/navigation/router_delegate.dart';
 import 'package:school_todo_list/presentation/notifiers/task_edit_notifier.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/utils/date_format.dart';
@@ -90,13 +91,15 @@ class TaskEditScreenAppBar extends StatelessWidget
         child: IconButton(
           onPressed: () {
             logger.d("TaskEditScreen close");
-            Navigator.of(context).pop();
+            (Router.of(context).routerDelegate as MyRouterDelegate)
+                .showMainScreen();
           },
           icon: const Icon(Icons.close),
         ),
       ),
       actions: [
         TextButton(
+          key: const ValueKey("SaveButton"),
           onPressed: () => _onSavePressed(context),
           child: Text(context.loc.buttonSave.toUpperCase()),
         ),
@@ -134,7 +137,8 @@ class TaskEditScreenAppBar extends StatelessWidget
 
     if (context.mounted) {
       if (isSuccess) {
-        Navigator.of(context).pop();
+        (Router.of(context).routerDelegate as MyRouterDelegate)
+            .showMainScreen();
       } else {
         showSnackBar(context, context.loc.errorSavingTask);
       }
@@ -190,7 +194,7 @@ class _TaskTextFieldState extends State<TaskTextField> {
             ),
           ),
           onChanged: (String text) {
-            notifier.taskTitle = text;
+            notifier.taskTitle = text.trim();
           },
         ),
       ),
@@ -214,6 +218,7 @@ class TaskImportanceField extends StatelessWidget {
     return MenuAnchor(
       menuChildren: [
         MenuItemButton(
+          key: const ValueKey('MenuItemButton_none'),
           child: Text(
             context.loc.importanceNone,
             style: Theme.of(context).textTheme.bodyLarge,
@@ -224,6 +229,7 @@ class TaskImportanceField extends StatelessWidget {
           },
         ),
         MenuItemButton(
+          key: const ValueKey('MenuItemButton_low'),
           child: Text.rich(
             style: Theme.of(context).textTheme.bodyLarge,
             createTextSpanWithImportance(
@@ -237,6 +243,7 @@ class TaskImportanceField extends StatelessWidget {
           },
         ),
         MenuItemButton(
+          key: const ValueKey('MenuItemButton_high'),
           child: Text.rich(
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.error,
@@ -392,7 +399,8 @@ class DeleteTaskButton extends StatelessWidget {
         if (!isSuccess) {
           showSnackBar(context, context.loc.errorDeletingTask);
         } else {
-          Navigator.of(context).pop();
+          (Router.of(context).routerDelegate as MyRouterDelegate)
+              .showMainScreen();
         }
       }
     }

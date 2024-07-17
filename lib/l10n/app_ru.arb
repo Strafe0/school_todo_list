@@ -39,5 +39,6 @@
                 "example": "true"
             }
         }
-    }
+    },
+    "offlineMode": "Оффлайн режим"
 }

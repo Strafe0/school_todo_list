@@ -85,4 +85,7 @@ class AppLocalizationsEn extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get offlineMode => 'Offline mode';
 }

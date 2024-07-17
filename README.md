@@ -2,13 +2,25 @@
 
 Flutter проект мобильного приложения "TODO лист".
 
-[Скачать APK файл](https://github.com/Strafe0/school_todo_list/releases/download/homework-2/todo-app-homework-2.apk)
+[Скачать APK файл](https://github.com/Strafe0/school_todo_list/releases/download/homework-3/todo-app-homework-3.apk)
 
 ## Реализованные фичи
-- Добавлена работа с бэкендом.
-- Добавлено сохранение задач в базу данных SQLite.
-- Добавлено обновление состояния приложения (использованный state management - Provider).
-- Добавлена интернационализация средствами Flutter SDK.
+- Обработка ошибок.
+- Инъекция зависимостей.
+- Оффлайн режим.
+- Navigator 2.0 и диплинки.
+Для проверки диплинка использовать команду
+```
+adb shell 'am start -a android.intent.action.VIEW \
+    -c android.intent.category.BROWSABLE \
+    -d "https://school_todo_list.example.com/task"' \
+    com.example.school_todo_list
+```
+- Unit-тесты для `TaskRepository` и `TaskRemoteSource` + два интеграционных теста.
+Для проверки интеграционных тестов использовать команду
+```
+flutter test -d "<device-name> или <device-id>" integration_test/*.dart --dart-define=TOKEN=<bearer-token>
+```
 
 ## Скриншоты
 <table>
@@ -17,10 +29,7 @@ Flutter проект мобильного приложения "TODO лист".
             Главный экран
         </td>
         <td>
-            Главный экран на английском
-        </td>
-        <td>
-            RefreshIndicator
+            Главный экран, когда нет интернета
         </td>
     </tr>
     <tr>
@@ -28,11 +37,7 @@ Flutter проект мобильного приложения "TODO лист".
             <img src="/screenshots/main_screen_new.jpg">
         </td>
         <td>
-            <img src="/screenshots/main_screen_eng.jpg">
-        </td>
-        <td>
-            <img src="/screenshots/refresh_indicator.jpg">
+            <img src="/screenshots/offline_mode.jpg">
         </td>
     </tr>
 </table>
-

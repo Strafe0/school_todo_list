@@ -27,6 +27,7 @@ class _FastCreationTextFieldState extends State<FastCreationTextField> {
         floatingLabelBehavior: FloatingLabelBehavior.never,
         border: InputBorder.none,
       ),
+      maxLines: null,
       textAlignVertical: TextAlignVertical.center,
       onTapOutside: (event) => _focusNode.unfocus(),
       textInputAction: TextInputAction.done,
@@ -39,7 +40,7 @@ class _FastCreationTextFieldState extends State<FastCreationTextField> {
         );
 
         bool isSuccess = await taskListNotifier.createTask(
-          Task(title: _textController.text),
+          Task(title: _textController.text.trim()),
         );
 
         if (!isSuccess && context.mounted) {

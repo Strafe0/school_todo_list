@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:school_todo_list/domain/entity/task.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
 
 class TaskUseCase {
-  TaskUseCase({required TaskRepository repository}) : _repository = repository;
+  TaskUseCase({
+    required TaskRepository repository,
+  }) : _repository = repository;
 
   final TaskRepository _repository;
 

@@ -118,7 +118,11 @@ class TaskList extends StatelessWidget {
             (BuildContext context, int index) {
               if (index == tasks.length) {
                 return const Padding(
-                  padding: EdgeInsets.only(left: 52.0, bottom: 8),
+                  padding: EdgeInsets.only(
+                    left: 48 + 8 + 4,
+                    bottom: 8,
+                    right: 48 + 8 + 4,
+                  ),
                   child: FastCreationTextField(),
                 );
               }

@@ -230,6 +230,12 @@ abstract class AppLocalizations {
   /// In ru, this message translates to:
   /// **'{showCompleted, select, true{Список задач пуст.} other{Список невыполненных задач пуст.}}'**
   String taskListIsEmpty(String showCompleted);
+
+  /// No description provided for @offlineMode.
+  ///
+  /// In ru, this message translates to:
+  /// **'Оффлайн режим'**
+  String get offlineMode;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

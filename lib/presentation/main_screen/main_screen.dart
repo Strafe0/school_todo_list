@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/logger.dart';
-import 'package:school_todo_list/presentation/task_edit/task_edit_screen.dart';
+import 'package:school_todo_list/navigation/router_delegate.dart';
+import 'package:school_todo_list/presentation/main_screen/body/offline_label.dart';
 import 'package:school_todo_list/presentation/notifiers/task_list_notifier.dart';
 import 'package:school_todo_list/presentation/main_screen/body/main_screen_body.dart';
 import 'package:school_todo_list/presentation/main_screen/main_screen_app_bar.dart';
@@ -43,6 +44,9 @@ class _MainScreenState extends State<MainScreen> {
                 onRefresh: () => notifier.loadTasks(),
                 child: CustomScrollView(
                   slivers: [
+                    const SliverToBoxAdapter(
+                      child: OfflineLabel(),
+                    ),
                     MainScreenBody(refreshIndicatorKey: _refreshKey),
                   ],
                 ),
@@ -53,11 +57,8 @@ class _MainScreenState extends State<MainScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             logger.d("Go to TaskEditScreen for creation");
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const TaskEditScreen(),
-              ),
-            );
+            (Router.of(context).routerDelegate as MyRouterDelegate)
+                .showNewTaskScreen();
           },
           child: const Icon(Icons.add),
         ),
