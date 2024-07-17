@@ -60,8 +60,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get questionDeleteTask => 'Delete task?';
 
   @override
-  String get warningDeletionIsIrreversible =>
-      'Once deleted, the task cannot be restored.';
+  String get warningDeletionIsIrreversible => 'Once deleted, the task cannot be restored.';
 
   @override
   String get errorCreationTask => 'Failed to create task';
