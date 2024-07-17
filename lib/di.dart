@@ -1,3 +1,4 @@
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:school_todo_list/data/offline/offline_manager.dart';
 import 'package:school_todo_list/data/source/local/database.dart';
@@ -6,6 +7,7 @@ import 'package:school_todo_list/data/source/local/task_local_source.dart';
 import 'package:school_todo_list/data/source/remote/api/api.dart';
 import 'package:school_todo_list/data/source/remote/api/revision_holder.dart';
 import 'package:school_todo_list/data/source/remote/connectivity.dart';
+import 'package:school_todo_list/data/source/remote/remote_config_repository.dart';
 import 'package:school_todo_list/data/source/remote/task_remote_source.dart';
 import 'package:school_todo_list/data/task_repository_impl.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
@@ -55,6 +57,28 @@ Future<void> setupDependencies() async {
       repository: GetIt.I.get<TaskRepository>(),
       connectionChecker: GetIt.I.get<ConnectionChecker>(),
     );
+  });
+
+  GetIt.I.registerSingletonAsync<FirebaseRemoteConfig>(
+    () async {
+      final remoteConfig = FirebaseRemoteConfig.instance;
+      await remoteConfig.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(minutes: 1),
+        minimumFetchInterval: const Duration(hours: 1),
+      ));
+      return remoteConfig;
+    },
+  );
+
+  GetIt.I.registerSingletonAsync<RemoteConfigRepository>(() async {
+    await GetIt.I.isReady<FirebaseRemoteConfig>();
+
+    final configRepo = RemoteConfigRepository(
+      GetIt.I.get<FirebaseRemoteConfig>(),
+    );
+    await configRepo.init();
+
+    return configRepo;
   });
 
   await GetIt.I.allReady();
