@@ -24,7 +24,7 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter pub get
-      - run: dart format --set-exit-if-changed .
+      - run: dart format --set-exit-if-changed $(find lib test integration_test -name '*.dart' -not -path 'lib/l10n/*' -and -not -name '*.freezed.dart')
     timeout-minutes: 10
   test:
     runs-on: ubuntu-latest
