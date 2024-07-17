@@ -57,6 +57,14 @@ void main() {
         .thenAnswer((_) => Future.value());
     when(() => db.getCachedTaskList()).thenAnswer((_) => Future.value([]));
 
+    // mock revision operations
+    when(() => revisionHolderMock.remoteRevision).thenReturn(1);
+    when(() => revisionHolderMock.localRevision).thenReturn(0);
+    when(() => revisionHolderMock.increaseLocalRevision())
+        .thenAnswer((_) => Future.value());
+    when(() => revisionHolderMock.saveLocalRevision(any(that: isA<int>())))
+        .thenAnswer((_) => Future.value());
+
     repository = TaskRepositoryImpl(
       remoteSource: remoteSourceMock,
       database: db,
@@ -67,7 +75,7 @@ void main() {
 
   group('TodoRepositoryImpl', () {
     test(
-        'и его метод addTask при наличии интернета должен отправлять задачу'
+        'и его метод addTask при наличии интернета должен отправлять задачу '
         'на сервер и сохранять возвращенную задачу в базу данных', () async {
       // arrange
       when(() => connectionChecker.hasConnection())
@@ -103,7 +111,7 @@ void main() {
 
     test(
         'и его метод getTaskList при наличии интернета '
-        'берет список задач с сервера, сохраняет его в БД, '
+        'берет список задач с сервера и с БД, синхронизирует их, '
         'после чего возвращает список с БД', () async {
       // arrange
       when(() => connectionChecker.hasConnection())
@@ -114,14 +122,12 @@ void main() {
 
       // assert
       verify(() => remoteSourceMock.getTaskList()).called(1);
-      verify(() => db.saveTaskList(any(that: isA<List<TaskDto>>()))).called(1);
-      verify(() => db.getCachedTaskList()).called(1);
+      verify(() => db.getCachedTaskList()).called(2);
     });
 
     test(
-        'и его метод getTaskList при наличии интернета '
-        'берет список задач с сервера, сохраняет его в БД, '
-        'после чего возвращает список с БД', () async {
+        'и его метод getTaskList при отсутствии интернета '
+        'берет список задач с БД', () async {
       // arrange
       when(() => connectionChecker.hasConnection())
           .thenAnswer((_) => Future.value(false));

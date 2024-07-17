@@ -26,7 +26,7 @@ void main() {
     when(() =>
             taskServiceMock.createTask(any(that: isA<Map<String, dynamic>>())))
         .thenAnswer((_) => Future.value(FakeElementResponse()));
-    when(() => revisionHolderMock.saveLocalRevision(any(that: isA<int>())))
+    when(() => revisionHolderMock.saveRemoteRevision(any(that: isA<int>())))
         .thenAnswer((_) => Future.value());
 
     remoteSource = TaskRemoteSourceImpl(
@@ -48,7 +48,8 @@ void main() {
         // assert
         verify(() => taskServiceMock
             .createTask(any(that: isA<Map<String, dynamic>>()))).called(1);
-        verify(() => revisionHolderMock.saveLocalRevision(any(that: isA<int>())))
+        verify(() =>
+                revisionHolderMock.saveRemoteRevision(any(that: isA<int>())))
             .called(1);
 
         expect(result, isA<TaskDto>());
