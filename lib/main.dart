@@ -18,7 +18,7 @@ void main() async {
   await initializeDateFormatting('ru_RU', null);
   WidgetsFlutterBinding.ensureInitialized();
 
-  await setupDependecies();
+  await setupDependencies();
 
   runApp(const MyApp());
 }

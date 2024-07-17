@@ -4,13 +4,14 @@ import 'package:school_todo_list/data/source/local/database.dart';
 import 'package:school_todo_list/data/source/local/shared_prefs.dart';
 import 'package:school_todo_list/data/source/local/task_local_source.dart';
 import 'package:school_todo_list/data/source/remote/api/api.dart';
+import 'package:school_todo_list/data/source/remote/api/revision_holder.dart';
 import 'package:school_todo_list/data/source/remote/connectivity.dart';
 import 'package:school_todo_list/data/source/remote/task_remote_source.dart';
 import 'package:school_todo_list/data/task_repository_impl.dart';
 import 'package:school_todo_list/domain/repository/task_repository.dart';
 import 'package:school_todo_list/domain/usecase/task_usecase.dart';
 
-Future<void> setupDependecies() async {
+Future<void> setupDependencies() async {
   GetIt.I.registerSingleton<ConnectionChecker>(ConnectionChecker());
 
   GetIt.I.registerSingletonAsync<SharedPrefsManager>(() async {
@@ -20,11 +21,14 @@ Future<void> setupDependecies() async {
     return prefs;
   });
 
+  await GetIt.I.isReady<SharedPrefsManager>();
+
+  GetIt.I.registerSingleton(RevisionHolder(GetIt.I.get<SharedPrefsManager>()));
+
   GetIt.I.registerSingletonAsync<TaskRepository>(() async {
     AppDatabaseImpl db = AppDatabaseImpl();
     await db.init();
 
-    await GetIt.I.isReady<SharedPrefsManager>();
     final Api api = Api(GetIt.I.get<SharedPrefsManager>());
 
     return TaskRepositoryImpl(
@@ -34,6 +38,7 @@ Future<void> setupDependecies() async {
       ),
       database: TaskDatabaseImpl(db),
       connectionChecker: GetIt.I.get<ConnectionChecker>(),
+      revisionHolder: GetIt.I.get<RevisionHolder>(),
     );
   });
 

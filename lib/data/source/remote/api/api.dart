@@ -23,7 +23,7 @@ class Api {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          options.headers["X-Last-Known-Revision"] = revisionHolder.revision;
+          options.headers["X-Last-Known-Revision"] = revisionHolder.localRevision;
           return handler.next(options);
         },
       ),

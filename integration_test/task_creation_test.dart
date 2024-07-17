@@ -11,7 +11,7 @@ void main() {
 
   testWidgets('Создание задачи по нажатию на FAB', (tester) async {
     // arrange
-    await setupDependecies();
+    await setupDependencies();
     await tester.pumpWidget(const MyApp());
     String testTaskTitle = "TEST fab creation : ${const Uuid().v1()}";
 

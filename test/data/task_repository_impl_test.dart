@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:school_todo_list/data/dto/task_dto.dart';
 import 'package:school_todo_list/data/source/local/task_local_source.dart';
+import 'package:school_todo_list/data/source/remote/api/revision_holder.dart';
 import 'package:school_todo_list/data/source/remote/connectivity.dart';
 import 'package:school_todo_list/data/source/remote/task_remote_source.dart';
 import 'package:school_todo_list/data/task_repository_impl.dart';
@@ -17,10 +18,13 @@ class TaskRemoteSourceMock extends Mock implements TaskRemoteSourceImpl {}
 
 class ConnectionCheckerMock extends Mock implements ConnectionChecker {}
 
+class RevisionHolderMock extends Mock implements RevisionHolder {}
+
 void main() {
   late TaskDatabase db;
   late ConnectionChecker connectionChecker;
   late TaskRemoteSource remoteSourceMock;
+  late RevisionHolder revisionHolderMock;
   late TaskRepository repository;
 
   Task task = Task(
@@ -38,6 +42,7 @@ void main() {
     remoteSourceMock = TaskRemoteSourceMock();
     db = TaskDatabaseMock();
     connectionChecker = ConnectionCheckerMock();
+    revisionHolderMock = RevisionHolderMock();
 
     // mock task creation
     when(() => remoteSourceMock.addTask(any(that: isA<TaskDto>())))
@@ -56,6 +61,7 @@ void main() {
       remoteSource: remoteSourceMock,
       database: db,
       connectionChecker: connectionChecker,
+      revisionHolder: revisionHolderMock,
     );
   });
 
