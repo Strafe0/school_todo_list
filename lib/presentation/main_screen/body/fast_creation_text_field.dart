@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/domain/entity/task.dart';
@@ -39,6 +40,7 @@ class _FastCreationTextFieldState extends State<FastCreationTextField> {
           listen: false,
         );
 
+        FirebaseAnalytics.instance.logEvent(name: "create_task_fast");
         bool isSuccess = await taskListNotifier.createTask(
           Task(title: _textController.text.trim()),
         );

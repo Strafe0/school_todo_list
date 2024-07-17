@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +43,10 @@ class _MainScreenState extends State<MainScreen> {
           },
           body: RefreshIndicator(
             key: _refreshKey,
-            onRefresh: () => notifier.loadTasks(),
+            onRefresh: () {
+              FirebaseAnalytics.instance.logEvent(name: "refresh_tasks");
+              return notifier.loadTasks();
+            },
             child: CustomScrollView(
               slivers: [
                 const SliverToBoxAdapter(
@@ -71,6 +75,10 @@ class _MainScreenState extends State<MainScreen> {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             logger.d("Go to TaskEditScreen for creation");
+            FirebaseAnalytics.instance.logScreenView(
+              screenClass: "TaskEditScreen",
+              screenName: "Task edit screen (create task)",
+            );
             (Router.of(context).routerDelegate as MyRouterDelegate)
                 .showNewTaskScreen();
           },

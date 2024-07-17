@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -91,6 +92,10 @@ class TaskEditScreenAppBar extends StatelessWidget
         child: IconButton(
           onPressed: () {
             logger.d("TaskEditScreen close");
+            FirebaseAnalytics.instance.logScreenView(
+              screenClass: "MainScreen",
+              screenName: "Main screen",
+            );
             (Router.of(context).routerDelegate as MyRouterDelegate)
                 .showMainScreen();
           },
@@ -130,13 +135,20 @@ class TaskEditScreenAppBar extends StatelessWidget
 
     bool isSuccess;
     if (notifier.editMode) {
+      FirebaseAnalytics.instance.logEvent(name: "update_task");
       isSuccess = await taskListNotifier.updateTask(notifier.task);
     } else {
+      FirebaseAnalytics.instance.logEvent(name: "create_task");
       isSuccess = await taskListNotifier.createTask(notifier.task);
     }
 
     if (context.mounted) {
       if (isSuccess) {
+
+        FirebaseAnalytics.instance.logScreenView(
+          screenClass: "MainScreen",
+          screenName: "Main screen",
+        );
         (Router.of(context).routerDelegate as MyRouterDelegate)
             .showMainScreen();
       } else {
@@ -386,10 +398,10 @@ class DeleteTaskButton extends StatelessWidget {
         context,
         listen: false,
       );
+      FirebaseAnalytics.instance.logEvent(name: "delete_task");
       bool isSuccess = await taskListNotifier.deleteTask(
         taskEditNotifier.task.id,
       );
-
       if (context.mounted) {
         if (!isSuccess) {
           showSnackBar(context, context.loc.errorDeletingTask);

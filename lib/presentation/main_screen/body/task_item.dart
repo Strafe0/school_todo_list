@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school_todo_list/data/mappers/mappers.dart';
@@ -47,6 +48,7 @@ class TaskItem extends StatelessWidget {
         },
         confirmDismiss: (direction) async {
           if (direction == DismissDirection.startToEnd) {
+            FirebaseAnalytics.instance.logEvent(name: "complete_task_swipe");
             _completeTask(context);
           } else if (direction == DismissDirection.endToStart) {
             _deleteTask(context);
@@ -64,6 +66,8 @@ class TaskItem extends StatelessWidget {
 
   void _completeTask(BuildContext context) async {
     Task updatedTask = task.copyWith(done: !task.done);
+
+    FirebaseAnalytics.instance.logEvent(name: "complete_task");
     bool result = await Provider.of<TaskListNotifier>(
       context,
       listen: false,
@@ -82,6 +86,7 @@ class TaskItem extends StatelessWidget {
       "${task.title}",
     );
 
+    FirebaseAnalytics.instance.logEvent(name: "delete_task_swipe");
     final taskListNotifier = Provider.of<TaskListNotifier>(
       context,
       listen: false,
@@ -106,6 +111,7 @@ class _TaskListTile extends StatelessWidget {
         value: task.done,
         onChanged: (bool? value) {
           logger.d("Toggle task ${task.id}. New value: $value");
+          FirebaseAnalytics.instance.logEvent(name: "complete_task_checkbox");
           completeTask(context);
         },
         fillColor: WidgetStatePropertyAll(
@@ -221,6 +227,10 @@ class _TaskInfoButton extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: () {
         logger.d("Go to TaskEditScreen for editing");
+        FirebaseAnalytics.instance.logScreenView(
+          screenClass: "TaskEditScreen",
+          screenName: "Task edit screen (update task)",
+        );
         (Router.of(context).routerDelegate as MyRouterDelegate)
             .showEditTaskScreen(task);
       },
