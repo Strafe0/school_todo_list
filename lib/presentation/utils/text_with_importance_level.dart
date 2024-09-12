@@ -27,3 +27,12 @@ TextSpan createTextSpanWithImportance({
     ],
   );
 }
+
+Color? getImportanceColor(BuildContext context, Importance importance) {
+  final colorScheme = Theme.of(context).colorScheme;
+  return switch (importance) {
+    Importance.high => colorScheme.error,
+    Importance.low => colorScheme.tertiary,
+    _ => null,
+  };
+}

@@ -14,23 +14,9 @@ ListResponse _$ListResponseFromJson(Map<String, dynamic> json) => ListResponse(
           .toList(),
     );
 
-Map<String, dynamic> _$ListResponseToJson(ListResponse instance) =>
-    <String, dynamic>{
-      'status': instance.status,
-      'revision': instance.revision,
-      'list': instance.list,
-    };
-
 ElementResponse _$ElementResponseFromJson(Map<String, dynamic> json) =>
     ElementResponse(
       json['status'] as String,
       (json['revision'] as num).toInt(),
       json['element'] as Map<String, dynamic>,
     );
-
-Map<String, dynamic> _$ElementResponseToJson(ElementResponse instance) =>
-    <String, dynamic>{
-      'status': instance.status,
-      'revision': instance.revision,
-      'element': instance.element,
-    };

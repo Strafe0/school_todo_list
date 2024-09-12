@@ -1,0 +1,66 @@
+name: Flutter CI
+
+on: push
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter analyze --no-fatal-infos
+    timeout-minutes: 10
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter pub get
+      - run: dart format --set-exit-if-changed $(find lib test integration_test -name '*.dart' -not -path 'lib/l10n/*' -and -not -name '*.freezed.dart')
+    timeout-minutes: 10
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter test
+    timeout-minutes: 10
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Build .apk
+        run: flutter build apk --dart-define=TOKEN="$YA_TOKEN"
+        env:
+          YA_TOKEN: ${{ secrets.YA_TOKEN }}
+      - name: Distribute by Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: students
+          file: build/app/outputs/flutter-apk/app-release.apk
+    timeout-minutes: 10

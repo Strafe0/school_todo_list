@@ -88,4 +88,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get offlineMode => 'Offline mode';
+
+  @override
+  String get buttonSync => 'Synchronize';
 }

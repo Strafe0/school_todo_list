@@ -5,10 +5,23 @@ class RevisionHolder {
 
   final SharedPrefsManager _prefs;
 
-  int get revision => _prefs.readRevision();
+  int get localRevision => _prefs.readLocalRevision();
 
-  Future<void> saveRevision(int newValue) async =>
-      await _prefs.writeRevision(newValue);
+  int get remoteRevision => _prefs.readRemoteRevision();
+
+  Future<void> saveLocalRevision(int newValue) async =>
+      await _prefs.writeLocalRevision(newValue);
+
+  Future<void> saveRemoteRevision(int newValue) async =>
+      await _prefs.writeRemoteRevision(newValue);
+
+  Future<void> increaseLocalRevision() async {
+    await _prefs.writeLocalRevision(localRevision + 1);
+  }
+
+  Future<void> increaseRemoteRevision() async {
+    await _prefs.writeRemoteRevision(remoteRevision + 1);
+  }
 
   static const revisionKey = "revision";
 }

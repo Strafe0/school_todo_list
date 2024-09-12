@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:school_todo_list/data/dto/task_dto.dart';
 import 'package:school_todo_list/data/source/local/task_local_source.dart';
+import 'package:school_todo_list/data/source/remote/api/revision_holder.dart';
 import 'package:school_todo_list/data/source/remote/connectivity.dart';
 import 'package:school_todo_list/data/source/remote/task_remote_source.dart';
 import 'package:school_todo_list/data/task_repository_impl.dart';
@@ -17,10 +18,13 @@ class TaskRemoteSourceMock extends Mock implements TaskRemoteSourceImpl {}
 
 class ConnectionCheckerMock extends Mock implements ConnectionChecker {}
 
+class RevisionHolderMock extends Mock implements RevisionHolder {}
+
 void main() {
   late TaskDatabase db;
   late ConnectionChecker connectionChecker;
   late TaskRemoteSource remoteSourceMock;
+  late RevisionHolder revisionHolderMock;
   late TaskRepository repository;
 
   Task task = Task(
@@ -38,6 +42,7 @@ void main() {
     remoteSourceMock = TaskRemoteSourceMock();
     db = TaskDatabaseMock();
     connectionChecker = ConnectionCheckerMock();
+    revisionHolderMock = RevisionHolderMock();
 
     // mock task creation
     when(() => remoteSourceMock.addTask(any(that: isA<TaskDto>())))
@@ -52,16 +57,25 @@ void main() {
         .thenAnswer((_) => Future.value());
     when(() => db.getCachedTaskList()).thenAnswer((_) => Future.value([]));
 
+    // mock revision operations
+    when(() => revisionHolderMock.remoteRevision).thenReturn(1);
+    when(() => revisionHolderMock.localRevision).thenReturn(0);
+    when(() => revisionHolderMock.increaseLocalRevision())
+        .thenAnswer((_) => Future.value());
+    when(() => revisionHolderMock.saveLocalRevision(any(that: isA<int>())))
+        .thenAnswer((_) => Future.value());
+
     repository = TaskRepositoryImpl(
       remoteSource: remoteSourceMock,
       database: db,
       connectionChecker: connectionChecker,
+      revisionHolder: revisionHolderMock,
     );
   });
 
   group('TodoRepositoryImpl', () {
     test(
-        'и его метод addTask при наличии интернета должен отправлять задачу'
+        'и его метод addTask при наличии интернета должен отправлять задачу '
         'на сервер и сохранять возвращенную задачу в базу данных', () async {
       // arrange
       when(() => connectionChecker.hasConnection())
@@ -97,7 +111,7 @@ void main() {
 
     test(
         'и его метод getTaskList при наличии интернета '
-        'берет список задач с сервера, сохраняет его в БД, '
+        'берет список задач с сервера и с БД, синхронизирует их, '
         'после чего возвращает список с БД', () async {
       // arrange
       when(() => connectionChecker.hasConnection())
@@ -108,14 +122,12 @@ void main() {
 
       // assert
       verify(() => remoteSourceMock.getTaskList()).called(1);
-      verify(() => db.saveTaskList(any(that: isA<List<TaskDto>>()))).called(1);
-      verify(() => db.getCachedTaskList()).called(1);
+      verify(() => db.getCachedTaskList()).called(2);
     });
 
     test(
-        'и его метод getTaskList при наличии интернета '
-        'берет список задач с сервера, сохраняет его в БД, '
-        'после чего возвращает список с БД', () async {
+        'и его метод getTaskList при отсутствии интернета '
+        'берет список задач с БД', () async {
       // arrange
       when(() => connectionChecker.hasConnection())
           .thenAnswer((_) => Future.value(false));

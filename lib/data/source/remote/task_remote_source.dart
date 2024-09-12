@@ -26,7 +26,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
       ElementResponse response = await _taskService.createTask(
         task.toApiJson(),
       );
-      await revisionHolder.saveRevision(response.revision);
+      await revisionHolder.saveRemoteRevision(response.revision);
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -42,7 +42,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   Future<TaskDto> deleteTaskById(String id) async {
     try {
       ElementResponse response = await _taskService.deleteTask(id);
-      await revisionHolder.saveRevision(response.revision);
+      await revisionHolder.saveRemoteRevision(response.revision);
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -58,7 +58,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   Future<TaskDto> getTaskById(String id) async {
     try {
       ElementResponse response = await _taskService.getById(id);
-      await revisionHolder.saveRevision(response.revision);
+      await revisionHolder.saveRemoteRevision(response.revision);
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -74,7 +74,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
   Future<List<TaskDto>> getTaskList() async {
     try {
       ListResponse response = await _taskService.getAll();
-      await revisionHolder.saveRevision(response.revision);
+      await revisionHolder.saveRemoteRevision(response.revision);
       List<TaskDto> taskDtos = response.list
           .map(
             (m) => TaskDto.fromJson(m),
@@ -98,7 +98,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
         task.id,
         task.toApiJson(),
       );
-      await revisionHolder.saveRevision(response.revision);
+      await revisionHolder.saveRemoteRevision(response.revision);
       return TaskDto.fromJson(response.element);
     } catch (error, stackTrace) {
       logger.e(
@@ -120,7 +120,7 @@ class TaskRemoteSourceImpl implements TaskRemoteSource {
           ],
         },
       );
-      await revisionHolder.saveRevision(response.revision);
+      await revisionHolder.saveRemoteRevision(response.revision);
       List<TaskDto> taskDtos = response.list
           .map(
             (m) => TaskDto.fromJson(m),

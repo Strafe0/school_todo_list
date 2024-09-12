@@ -13,7 +13,7 @@ void main() {
     'Быстрое создание с помощью текстового поля в конце списка задач',
     (tester) async {
       // arrange
-      await setupDependecies();
+      await setupDependencies();
       await tester.pumpWidget(const MyApp());
       String testTaskTitle = "TEST fast creation : ${const Uuid().v1()}";
 
